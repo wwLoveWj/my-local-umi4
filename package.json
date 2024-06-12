@@ -1,0 +1,30 @@
+{
+  "name": "my-template-umi",
+  "private": true,
+  "author": "ww",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "umi dev",
+    "build": "umi build",
+    "postinstall": "umi setup",
+    "setup": "umi setup",
+    "start": "npm run dev"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.3.7",
+    "ahooks": "^3.8.0",
+    "antd": "^5.18.0",
+    "axios": "^1.7.2",
+    "dayjs": "^1.11.11",
+    "lodash-es": "^4.17.21",
+    "md5": "^2.3.0",
+    "umi": "^4.2.10",
+    "umi-plugin-keep-alive": "^0.0.1-beta.35"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.33",
+    "@types/react-dom": "^18.0.11",
+    "@umijs/plugins": "^4.2.10",
+    "typescript": "^5.0.3"
+  }
+}

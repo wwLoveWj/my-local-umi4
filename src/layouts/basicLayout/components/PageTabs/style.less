@@ -1,0 +1,55 @@
+.user-page-tabs {
+  height: 30px;
+  padding: 4px 8px;
+  background: #ffffff;
+  overflow-y: hidden;
+  :global {
+    .my-template-umi-ant-tabs {
+      height: 30px !important;
+      line-height: 30px !important;
+    }
+    .my-template-umi-ant-tabs-nav {
+      margin: 0 !important;
+    }
+    .my-template-umi-ant-tabs-nav::before {
+      border: 0 !important;
+    }
+    .my-template-umi-ant-tabs-content-holder {
+      height: 0 !important;
+    }
+    .my-template-umi-ant-tabs-tab {
+      height: 22px;
+      line-height: 22px;
+      background: #ffffff !important;
+      border-radius: 2px;
+      padding: 0 8px !important;
+      border: 1px solid #d9d9d9 !important;
+    }
+    .my-template-umi-ant-tabs-tab-remove {
+      margin-left: 0px !important;
+    }
+    .my-template-umi-ant-tabs-tab-remove:hover {
+      color: #1890ff !important;
+    }
+    .my-template-umi-ant-tabs-tab-active {
+      border: 1px solid #1890ff !important;
+      .my-template-umi-ant-tabs-tab-remove {
+        color: #1890ff !important;
+      }
+    }
+    .my-template-umi-ant-tabs-tab + .my-template-umi-ant-tabs-tab {
+      margin: 0 0 0 8px;
+    }
+    .my-template-umi-ant-tabs-nav-more {
+      padding: 0px 16px !important;
+      height: 22px !important;
+      line-height: 22px !important;
+    }
+    .my-template-umi-ant-tabs-ink-bar {
+      width: 0 !important;
+    }
+  }
+}
+
+// 右键菜单样式
+//   原文链接：https://blog.csdn.net/m0_67011584/article/details/135681082

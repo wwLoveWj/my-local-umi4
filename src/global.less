@@ -1,0 +1,53 @@
+@import "./styles/loading.less";
+
+* {
+  margin: 0;
+  padding: 0;
+}
+body {
+  min-height: 100vh;
+  // background: url(@/assets/imgs/bg.png) center / cover;
+}
+a {
+  text-decoration: none;
+}
+ul {
+  list-style: none;
+}
+
+.my-template-umi-ant-menu-item-only-child {
+  .my-template-umi-ant-menu-title-content {
+    margin-left: 24px;
+  }
+}
+// .my-template-umi-ant-menu-submenu {
+//   .my-template-umi-ant-menu-title-content {
+//     margin-left: 0px;
+//   }
+// }
+/* ---滚动条默认显示样式-- */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(157, 165, 183, 0.5);
+  background-clip: padding-box;
+  border-color: transparent;
+  border-style: dashed;
+  border-width: 2px;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(157, 165, 183, 0.8);
+  background-clip: border-box;
+}
+
+/*---滚动框背景样式--*/
+
+::-webkit-scrollbar-track-piece {
+  background-color: #fff;
+  -webkit-border-radius: 0;
+}
