@@ -1,0 +1,25 @@
+.fileUpload {
+  display: flex;
+  flex-direction: column;
+  .fileUploadContent {
+    border: 1px dashed #ccc;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    position: relative;
+    img {
+      object-fit: contain;
+      width: 100%;
+      height: 100%;
+    }
+    .clearImg {
+      position: absolute;
+      right: -6px;
+      top: -10px;
+    }
+  }
+}

@@ -80,6 +80,13 @@ export const routes = [
         //   },
         // ],
       },
+      {
+        key: "mails",
+        title: "router.mails",
+        path: "/mails",
+        icon: HomeOutlined,
+        component: "./mails/index",
+      },
     ],
   },
   {

@@ -3,7 +3,7 @@ import axios from "axios";
 import { Progress } from "antd";
 import { uploadImage } from "@/utils/index";
 import { PlusOutlined, CloseCircleOutlined } from "@ant-design/icons";
-import styles from "./style.less";
+import styles from "../style.less";
 
 const Index = ({
   getImgUrl,
