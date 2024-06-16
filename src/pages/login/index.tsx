@@ -1,78 +1,62 @@
-import React, { useEffect, useState } from "react";
-import { history, useLocation } from "umi";
-import md5 from "md5";
-import { useRequest } from "ahooks";
+import { setToken } from "@/utils/localToken";
+import { startSakura } from "@/utils/sakura";
 import { loginUserAPI } from "@/service/api/login";
-import styles from "./style.less";
-import "./style.less";
+import { useRequest } from "ahooks";
+import { Button } from "antd";
+import { useEffect } from "react";
+import { history } from "umi";
+import md5 from "md5";
+import style from "./style.less";
+import CommonForm from "./components/common";
+import type { LoginInfoType } from "./type";
 
-interface LoginInfoType {
-  username: string;
-  token: string;
-}
-const Login = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPwd] = useState("");
-  const detailsData = (useLocation() as any).state; //注册成功后传递过来的用户名
+export default function Index() {
+  const handleLoginInfoMsg = useRequest(
+    (fieldValues: LoginInfoType) =>
+      loginUserAPI({ ...fieldValues, password: md5(fieldValues?.password) }),
+    {
+      debounceWait: 100,
+      manual: true,
+      onSuccess: async (res: any) => {
+        // 存储token以及login信息
+        await setToken(res?.token);
+        localStorage.setItem(
+          "login-info",
+          JSON.stringify({ ...res, loginPath: "/login" })
+        );
+        // 语音提示用户登录成功
+        const utterThis = new window.SpeechSynthesisUtterance(
+          "恭喜你登录成功" + res?.username + "欢迎回来！"
+        );
+        window.speechSynthesis.speak(utterThis);
+        history.push("/home");
+      },
+    }
+  );
 
-  /**
-   * 注册用户接口
-   */
-  const registerUserAPIRun = useRequest((params: any) => loginUserAPI(params), {
-    debounceWait: 100,
-    manual: true,
-    onSuccess: (res: LoginInfoType) => {
-      localStorage.setItem("login-info", JSON.stringify(res));
-      history.push("/");
-    },
-  });
-  const handleLogin = () => {
-    registerUserAPIRun.run({ username, password: md5(password) });
-  };
-
+  // 樱花效果
   useEffect(() => {
-    setUsername(detailsData?.username);
+    startSakura();
   }, []);
   return (
-    <div className={styles.login}>
-      <div className={styles.userInfo}>
-        <div className="login-box">
-          <form>
-            <div className="user-box">
-              <input
-                type="text"
-                name=""
-                required
-                value={username}
-                onChange={(e) => {
-                  setUsername(e.target.value);
-                }}
-              />
-              <label>Username</label>
-            </div>
-            <div className="user-box">
-              <input
-                type="password"
-                name=""
-                required
-                value={password}
-                onChange={(e) => {
-                  setPwd(e.target.value);
-                }}
-              />
-              <label>Password</label>
-            </div>
-            <center>
-              <a onClick={handleLogin}>
-                SEND
-                <span></span>
-              </a>
-            </center>
-          </form>
+    <div className={style.all}>
+      <div className={style.login}>
+        <div className={[style.title, style.text].join(" ")}>积分登录界面</div>
+        <CommonForm handleLoginInfoMsg={handleLoginInfoMsg} status="login" />
+        <div className={style.lastBtn}>
+          <Button
+            type="link"
+            onClick={() => {
+              history.push("/register");
+            }}
+          >
+            去注册
+          </Button>
         </div>
       </div>
+      <p className={style.filingNumber}>
+        ©2016-2024 青女王食品股份有限公司 版权所有 浙ICP备1532853号
+      </p>
     </div>
   );
-};
-
-export default Login;
+}
