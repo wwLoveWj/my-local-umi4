@@ -27,4 +27,5 @@ export default {
   "router.mails.send": "mails-send",
   "router.mails.settings": "mails-settings",
   "router.taichi": "Tai Chi",
+  "router.link": "link-manage",
 };

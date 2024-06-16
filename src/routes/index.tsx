@@ -87,6 +87,20 @@ export const routes = [
         icon: HomeOutlined,
         component: "./mails/index",
       },
+      {
+        key: "ai",
+        title: "router.ai",
+        path: "/ai",
+        icon: HomeOutlined,
+        component: "./chatGpt/index",
+      },
+      {
+        key: "link",
+        title: "router.link",
+        path: "/link",
+        icon: HomeOutlined,
+        component: "./cardLink/index",
+      },
     ],
   },
   {
