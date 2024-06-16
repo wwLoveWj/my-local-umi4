@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { history } from "umi";
 import md5 from "md5";
 import style from "./style.less";
+import "./style.less";
 import CommonForm from "./components/common";
 import type { LoginInfoType } from "./type";
 
