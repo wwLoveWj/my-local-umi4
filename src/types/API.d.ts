@@ -7,4 +7,9 @@ declare namespace API {
     id: number;
     linkId: string;
   }
+  interface ApiInfoType {
+    APIKey: string;
+    APISecret: string;
+    APPID: string;
+  }
 }

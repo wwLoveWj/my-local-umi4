@@ -1,0 +1,52 @@
+.answer {
+  width: 100%;
+  position: relative;
+  height: 70vh;
+}
+// 用户输入框
+.ipt-btn {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  bottom: 60px;
+  margin: 0 15px;
+  padding-right: 15px;
+  border-radius: 15px;
+  width: calc(100% - 30px);
+  height: 50px;
+  border: 1px solid #e7eaec;
+  .chatInpt {
+    resize: none;
+    overflow-y: auto;
+    border: none;
+    box-shadow: none;
+    width: 100%;
+  }
+  .chatInpt:focus {
+    border: none !important;
+    box-shadow: none !important;
+  }
+}
+// 对话容器
+#chatContainer {
+  max-height: calc(70vh - 120px);
+  height: auto;
+  overflow-y: auto;
+}
+// ------------------ TODO:
+.message-bubble {
+  padding: 10px;
+  margin: 5px;
+  display: flex;
+  align-items: flex-start;
+  border-bottom: 1px dashed #e7eaec;
+}
+.message-bubble p {
+  font-size: 18px;
+  margin-left: 15px;
+}
+.chat-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 3px;
+}

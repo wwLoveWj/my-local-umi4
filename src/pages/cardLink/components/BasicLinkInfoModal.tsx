@@ -1,7 +1,7 @@
 import React, { useImperativeHandle, forwardRef, useState } from "react";
 import { Form, Input, Select } from "antd";
 // import { useRequest } from "ahooks";
-import UploadImage from "@/pages/files/components/Upload";
+import UploadImage from "@/pages/files/index";
 import { guid } from "@/utils";
 const { TextArea } = Input;
 

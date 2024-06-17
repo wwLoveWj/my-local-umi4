@@ -3,7 +3,7 @@ import { Form, Input, Select } from "antd";
 import { useRequest } from "ahooks";
 import { MailInfoSendAPI } from "@/service/api/mails";
 import { UserInfo } from "@/service/api/user";
-import UploadImage from "@/pages/files/components/Upload";
+import UploadImage from "@/pages/files/index";
 const { TextArea } = Input;
 
 const Index = forwardRef(({}, preantRef) => {
