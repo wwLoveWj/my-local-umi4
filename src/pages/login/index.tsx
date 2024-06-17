@@ -26,10 +26,10 @@ export default function Index() {
           JSON.stringify({ ...res, loginPath: "/login" })
         );
         // 语音提示用户登录成功
-        const utterThis = new window.SpeechSynthesisUtterance(
-          "恭喜你登录成功" + res?.username + "欢迎回来！"
-        );
-        window.speechSynthesis.speak(utterThis);
+        // const utterThis = new window.SpeechSynthesisUtterance(
+        //   "恭喜你登录成功" + res?.username + "欢迎回来！"
+        // );
+        // window.speechSynthesis.speak(utterThis);
         history.push("/home");
       },
     }

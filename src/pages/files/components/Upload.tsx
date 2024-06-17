@@ -8,7 +8,7 @@ import styles from "../style.less";
 const Index = ({
   getImgUrl,
 }: {
-  getImgUrl: ({ data }: { data: { filename: string; path: string } }) => void;
+  getImgUrl: ({ data }: { data: any }) => void;
 }) => {
   const [upLoadProgress, setupLoadProgress] = useState(0);
   const [imageUrl, setImgUrl] = useState("");

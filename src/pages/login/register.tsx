@@ -81,7 +81,7 @@ export default function Index() {
           <Row className={style.verifyCode} gutter={8}>
             <Col span={17}>
               <Form.Item
-                name="code"
+                name="verifyCode"
                 label="验证码"
                 rules={[
                   {
