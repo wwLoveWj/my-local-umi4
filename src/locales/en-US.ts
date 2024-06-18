@@ -28,4 +28,5 @@ export default {
   "router.mails.settings": "mails-settings",
   "router.taichi": "Tai Chi",
   "router.link": "link-manage",
+  "router.todo": "todo-notice",
 };

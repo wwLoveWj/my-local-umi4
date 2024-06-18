@@ -28,4 +28,5 @@ export default {
   "router.mails.settings": "邮箱设置",
   "router.taichi": "太极",
   "router.link": "链接管理",
+  "router.todo": "待办通知",
 };

@@ -101,6 +101,13 @@ export const routes = [
         icon: HomeOutlined,
         component: "./cardLink/index",
       },
+      {
+        key: "todo",
+        title: "router.todo",
+        path: "/todo",
+        icon: HomeOutlined,
+        component: "./todoNotification/index",
+      },
     ],
   },
   {
