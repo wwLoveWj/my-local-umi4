@@ -38,6 +38,8 @@ const Index = forwardRef(({}, preantRef) => {
             subject: title,
             text: content,
             attachments,
+            currentUser: JSON.parse(localStorage.getItem("login-info") || `{}`)
+              ?.username,
           });
         });
       },
