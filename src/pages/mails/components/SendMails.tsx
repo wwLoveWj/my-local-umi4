@@ -22,11 +22,13 @@ const Index = forwardRef(({}, preantRef) => {
       setReceiverList(res);
     },
   });
-  const mailInfoSendFn = useRequest((params) => MailInfoSendAPI(params), {
-    debounceWait: 100,
-    manual: true,
-    onSuccess: (res: any) => {},
-  });
+  const mailInfoSendFn = useRequest(
+    (params: API.MailSendParamsType) => MailInfoSendAPI(params),
+    {
+      debounceWait: 100,
+      manual: true,
+    }
+  );
   useImperativeHandle(preantRef, () => {
     return {
       onFinish: () => {

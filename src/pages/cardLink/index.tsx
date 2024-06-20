@@ -53,24 +53,29 @@ const Index = () => {
       <Row gutter={[16, 12]}>
         {cardList.map((item) => {
           return (
-            <Col span={8} key={item.id}>
+            <Col span={6} key={item.id}>
               <a href={item.link} target="_blank">
                 {/* window.location.href = "https://www.baidu.com";//当前页面跳转到指定链接(不打开新页面)
                 window.open("https://www.baidu.com");//在新的窗口打开指定链接 */}
-                <Card className={styles.animateCard}>
-                  <Flex wrap gap="small">
+                <Card
+                  className={styles.animateCard}
+                  bodyStyle={{ padding: "18px 20px" }}
+                >
+                  <Flex wrap gap="small" align="center">
                     <Avatar
                       style={{
                         backgroundColor: "#f56a00",
                         verticalAlign: "middle",
                       }}
-                      size="large"
-                      gap={4}
+                      size={52}
+                      gap={8}
                       src={item.avatar}
                     ></Avatar>
-                    <h2>{item.name}</h2>
+                    <div style={{ marginLeft: "6px" }}>
+                      <h3>{item.name}</h3>
+                      <p className={styles.desc}>{item.description}</p>
+                    </div>
                   </Flex>
-                  <div className={styles.desc}>{item.description}</div>
                 </Card>
               </a>
             </Col>

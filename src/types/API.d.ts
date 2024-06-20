@@ -12,4 +12,11 @@ declare namespace API {
     APISecret: string;
     APPID: string;
   }
+  interface MailSendParamsType {
+    to: string;
+    subject: string;
+    text: string;
+    attachments: any;
+    currentUser: string;
+  }
 }
