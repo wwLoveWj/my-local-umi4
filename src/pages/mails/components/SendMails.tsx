@@ -48,19 +48,7 @@ const Index = forwardRef(({}, preantRef) => {
     };
   });
   return (
-    <Form
-      form={form}
-      layout="vertical"
-      //   onFinish={(value) => {
-      //     const { receiver, content, title, attachments } = value;
-      //     MailInfoSendAPI({
-      //       to: receiver,
-      //       subject: title,
-      //       text: content,
-      //       attachments,
-      //     });
-      //   }}
-    >
+    <Form form={form} layout="vertical">
       <Form.Item
         name="title"
         label="主题"
