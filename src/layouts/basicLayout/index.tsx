@@ -43,6 +43,7 @@ interface Iprops {
   projectName: string;
 }
 const Index: React.FC<Iprops> = ({ avatarItems, rolesList, projectName }) => {
+  const connectInfo = (window.navigator as any).connection;
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -154,6 +155,11 @@ const Index: React.FC<Iprops> = ({ avatarItems, rolesList, projectName }) => {
                   color: "#fff",
                 }}
               />
+              <div className="onlineInfo">
+                <span>网络状态：{connectInfo.effectiveType}</span>
+                <span>延迟：{connectInfo.rtt}ms</span>
+                <span>带宽：{connectInfo.downlink} Mb/s</span>
+              </div>
               {/* 语言的切换 */}
               {rolesList.includes("admin") && (
                 <LangChgIndex themeColor={themeColorLang} />

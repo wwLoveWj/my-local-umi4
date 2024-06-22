@@ -19,4 +19,11 @@ declare namespace API {
     attachments: any;
     currentUser: string;
   }
+  interface taskListType {
+    task: string;
+    taskId: string;
+    createTime: string;
+    completeTime: string;
+    status: string;
+  }
 }
