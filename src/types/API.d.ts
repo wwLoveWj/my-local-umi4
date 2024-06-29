@@ -23,7 +23,7 @@ declare namespace API {
     task: string;
     taskId: string;
     createTime: string;
-    completeTime: string;
+    reminderTime: string;
     status: string;
   }
 }

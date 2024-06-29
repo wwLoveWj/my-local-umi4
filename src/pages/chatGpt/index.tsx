@@ -114,7 +114,7 @@ const Index = () => {
   }
 
   return (
-    <Row>
+    <Row className="layout-padding">
       <div>
         <h1 className="text-center m-b-lg">Chat with ChatGPT</h1>
       </div>

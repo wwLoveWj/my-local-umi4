@@ -7,12 +7,10 @@ const Index = ({
   isOpenModel,
   setIsOpenModel,
   getReminderTime,
-  taskDetails,
 }: {
   isOpenModel: boolean;
   setIsOpenModel: any;
-  getReminderTime: (param: any, details: any) => void;
-  taskDetails: any;
+  getReminderTime: (param: any) => void;
 }) => {
   const [reminderTime, setReminderTime] = useState<string | string[]>("");
   const [userEmail, setUserEmail] = useState("");
@@ -24,7 +22,7 @@ const Index = ({
     console.log("onOk: ", value);
   };
   const submitReminderTime = () => {
-    getReminderTime({ reminderTime, userEmail }, taskDetails);
+    getReminderTime({ reminderTime, userEmail });
   };
 
   return (
@@ -45,7 +43,7 @@ const Index = ({
           />
           <Input
             suffix="@163.com"
-            defaultValue="blww885"
+            defaultValue="123456"
             onChange={(e) => {
               let value = e.target.value;
               setUserEmail(value + "@163.com");

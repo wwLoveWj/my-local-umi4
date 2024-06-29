@@ -35,7 +35,7 @@ const Index = () => {
     });
   };
   return (
-    <div>
+    <div className="layout-padding">
       <Button type="primary" onClick={showModal}>
         发送邮件
       </Button>

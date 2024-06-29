@@ -200,11 +200,11 @@ const Index: React.FC<Iprops> = ({ avatarItems, rolesList, projectName }) => {
             <Content
               style={{
                 margin: 0,
-                padding: 12, //内部容器的padding
+                // padding: 12, //内部容器的padding
                 minHeight: 280,
                 // background: colorBgContainer,
                 borderRadius: borderRadiusLG,
-                background: "#fff",
+                // background: "#fff",
                 // 高度需要减去headers、面包屑这些
                 height: "calc(100vh - 152px)",
                 overflow: "auto",

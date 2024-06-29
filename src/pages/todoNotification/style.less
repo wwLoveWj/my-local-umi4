@@ -1,15 +1,40 @@
 .animateCard {
   cursor: pointer;
-  box-shadow: 0 0px 15px 3px #ccc;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.7);
   transition: 0.5s;
   position: relative;
   bottom: 0;
   background: #f8f9fa;
+  overflow: hidden;
+  // background-image: linear-gradient(to right, #fb7299, #ff5c7c);
+  border: #f8f9fa;
 }
+.animateCard::after {
+  content: "";
+  display: block;
+  background: linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0),
+    rgba(255, 255, 255, 0.3),
+    rgba(0, 0, 0, 0)
+  );
+  transform: rotate(-45deg) translate(0, -360px);
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 70px;
+  width: 800px;
+}
+// 金属光泽感不完全
+// .animateCard:hover::after {
+//   transform: rotate(-45deg) translate(0, 100px);
+//   transition: 1s ease-in-out;
+// }
 .animateCard:hover {
   bottom: 5px;
-  box-shadow: 0 12px 15px 9px #ccc;
+  box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
 }
+
 .times {
   line-height: 40px;
   //   color: #92999f;
@@ -26,5 +51,46 @@
     align-items: center;
     font-size: 20px;
     color: #0083f6;
+    // animation: colorChg 1.5s infinite;
+  }
+}
+.taskInfo {
+  position: relative;
+  height: 100%;
+  background: #fff;
+  // 任务完成情况统计
+  .completedTotal {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 12px 0;
+    background: #fff;
+    font-weight: 700;
+    > span:first-child {
+      color: green;
+    }
+    span {
+      color: red;
+    }
+  }
+  .createTask {
+    position: sticky;
+    top: -12px;
+    z-index: 999;
+    background: #fff;
+    padding: 12px;
+    transition: 0.5s;
+    margin-bottom: 12px;
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
+  }
+}
+.competetime {
+  animation: colorChg 1.5s infinite;
+}
+@keyframes colorChg {
+  from {
+    color: yellow;
+  }
+  to {
+    color: red;
   }
 }

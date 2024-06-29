@@ -46,7 +46,7 @@ const Index = () => {
     });
   };
   return (
-    <>
+    <div className="layout-padding">
       <Button style={{ marginBottom: "12px" }} onClick={showModal}>
         增加资源
       </Button>
@@ -92,7 +92,7 @@ const Index = () => {
           <BasicLinkInfoModal ref={childRef} />
         </WwModel>
       )}
-    </>
+    </div>
   );
 };
 

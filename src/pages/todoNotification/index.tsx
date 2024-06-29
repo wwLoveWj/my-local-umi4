@@ -1,17 +1,19 @@
-import React, { useState, useRef } from "react";
-import { Card, Button, Flex, Row, Col, Input } from "antd";
+import React, { useRef, useState } from "react";
+import { Card, Button, Flex, Row, Col, Input, Popconfirm } from "antd";
 import type { SearchProps } from "antd/es/input/Search";
 import { AlertOutlined, AudioOutlined } from "@ant-design/icons";
 import {
   QueryTaskInfoAPI,
   reminderTaskAPI,
   createReminderTaskAPI,
+  deleteReminderTaskAPI,
 } from "@/service/api/task";
 import ReminderTimeModal from "./components/ReminderTimeModal";
 import { useRequest } from "ahooks";
 import styles from "./style.less";
 import { guid } from "@/utils";
 import dayjs from "dayjs";
+import "./style.less";
 
 const STATUS_TYPE = new Map([
   ["1", "completed"],
@@ -21,7 +23,14 @@ const { Search } = Input;
 const Index = () => {
   const [taskList, setTaskList] = useState<API.taskListType[]>([]);
   const [isOpenModel, setIsOpenModel] = useState<boolean>(false);
-
+  const [taskName, setTaskName] = useState("");
+  const [taskDetails, setTaskDetails] = useState<
+    Partial<{
+      task: string;
+      taskId: string;
+    }>
+  >({});
+  const timeRef = useRef(null);
   // 请求任务卡片列表信息
   const queryQueryTaskInfo = useRequest(() => QueryTaskInfoAPI({}), {
     debounceWait: 100,
@@ -42,6 +51,9 @@ const Index = () => {
       manual: true,
       onSuccess: () => {
         queryQueryTaskInfo.run();
+        // 语音提示用户任务
+        // const utterThis = new window.SpeechSynthesisUtterance(taskDetails.task);
+        // window.speechSynthesis.speak(utterThis);
       },
     }
   );
@@ -53,18 +65,30 @@ const Index = () => {
       debounceWait: 100,
       manual: true,
       onSuccess: () => {
+        setTaskName("");
         queryQueryTaskInfo.run();
       },
     }
   );
-  const getReminderTime = (param: any, item: any) => {
+  const deleteReminderTask = useRequest(
+    (taskId: string) => deleteReminderTaskAPI({ taskId }),
+    {
+      debounceWait: 100,
+      manual: true,
+      onSuccess: () => {
+        queryQueryTaskInfo.run();
+      },
+    }
+  );
+  //   发送任务提醒
+  const getReminderTime = (param: any) => {
     setIsOpenModel(false);
     const { userEmail, reminderTime } = param;
     reminderTaskFn.run({
       userEmail,
-      reminderContent: item.task,
+      reminderContent: taskDetails.task,
       reminderTime,
-      taskId: item.taskId,
+      taskId: taskDetails.taskId,
     });
   };
   const suffix = (
@@ -80,22 +104,40 @@ const Index = () => {
     createReminderTask.run(value);
   };
   return (
-    <>
+    <div className={styles.taskInfo}>
+      <div className={styles.completedTotal}>
+        <span>{`已完成：${
+          taskList.filter((item) => Number(item.status) === 1)?.length
+        }条`}</span>
+        <span>{`未完成：${
+          taskList.filter((item) => Number(item.status) === 0)?.length
+        }条`}</span>
+      </div>
       <Search
-        style={{ marginBottom: "12px" }}
         placeholder="创建任务提醒"
         enterButton="Add"
         size="large"
+        className={styles.createTask}
         suffix={suffix}
+        value={taskName}
         onSearch={onSearch}
+        onChange={(e) => {
+          let value = e.target.value;
+          setTaskName(value);
+        }}
       />
-      <Row gutter={[16, 12]}>
+      <Row
+        gutter={[16, 12]}
+        style={{ padding: "0 12px 12px", width: `calc(100% + 8px)` }}
+      >
         {taskList.map((item) => {
           return (
             <Col span={8} key={item.taskId}>
               <Card
                 className={styles.animateCard}
                 bodyStyle={{ padding: "18px 20px" }}
+                loading={queryQueryTaskInfo.loading}
+                // bordered={}
               >
                 <Flex wrap gap="small" vertical>
                   <div className={styles.taskHeader}>
@@ -116,9 +158,16 @@ const Index = () => {
                       </p>
                     </div>
                     <div
+                      ref={timeRef}
                       className={styles.reminderTime}
+                      style={
+                        item.reminderTime && Number(item.status) === 0
+                          ? { animation: `colorChg 1.5s infinite` }
+                          : {}
+                      }
                       onClick={() => {
                         // 调出时间设置弹窗
+                        setTaskDetails(item);
                         setIsOpenModel(true);
                       }}
                     >
@@ -139,26 +188,34 @@ const Index = () => {
                       创建时间：
                       {dayjs(item.createTime).format("YYYY-MM-DD HH:mm:ss")}
                     </p>
-                    {item.completeTime && <p>完成时间：{item.completeTime}</p>}
+                    {item.reminderTime && <p>提醒时间：{item.reminderTime}</p>}
+                    {item.reminderTime && <p>剩余时间：{item.reminderTime}</p>}
                   </div>
                   <div className="btn">
-                    <Button type="primary" danger>
-                      删除
-                    </Button>
+                    <Popconfirm
+                      title={`确定要删除【${item.task}】任务吗？`}
+                      placement="topLeft"
+                      onConfirm={() => {
+                        deleteReminderTask.run(item.taskId);
+                      }}
+                    >
+                      <Button type="primary" danger>
+                        删除
+                      </Button>
+                    </Popconfirm>
                   </div>
                 </Flex>
-                <ReminderTimeModal
-                  setIsOpenModel={setIsOpenModel}
-                  isOpenModel={isOpenModel}
-                  taskDetails={item}
-                  getReminderTime={getReminderTime}
-                />
               </Card>
             </Col>
           );
         })}
       </Row>
-    </>
+      <ReminderTimeModal
+        setIsOpenModel={setIsOpenModel}
+        isOpenModel={isOpenModel}
+        getReminderTime={getReminderTime}
+      />
+    </div>
   );
 };
 
