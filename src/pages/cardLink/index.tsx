@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Card, Button, Flex, Row, Col, Avatar } from "antd";
+import { Card, Button, Flex, Row, Col, Avatar, Tooltip } from "antd";
 import BasicLinkInfoModal from "./components/BasicLinkInfoModal";
 import { LocalizedModal as WwModel } from "@/components/wwModel/index";
 import {
@@ -73,7 +73,9 @@ const Index = () => {
                     ></Avatar>
                     <div style={{ marginLeft: "6px" }}>
                       <h3>{item.name}</h3>
-                      <p className={styles.desc}>{item.description}</p>
+                      <Tooltip placement="bottomLeft" title={item.description}>
+                        <p className={styles.desc}>{item.description}</p>
+                      </Tooltip>
                     </div>
                   </Flex>
                 </Card>

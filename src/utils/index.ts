@@ -10,6 +10,44 @@ export const guid = () => {
   });
 };
 
+export const countDownTime = (reminderTime: string) => {
+  // 只有一位数字时添加“0”
+  const checkTime = function (i: number) {
+    if (i < 10) {
+      if (i < 0) {
+        i = "00";
+      } else {
+        i = "0" + i;
+      }
+    }
+
+    return i;
+  };
+  //获取当前时间距离截止时间的倒计时
+  //参数为截止时间
+  const remainingTime = new Date(reminderTime) - new Date(); //计算剩余毫秒数
+  let days = parseInt(remainingTime / 1000 / 60 / 60 / 24, 10); //计算剩余天数
+  let hours = parseInt((remainingTime / 1000 / 60 / 60) % 24, 10); //计算剩余小时数
+  let minutes = parseInt((remainingTime / 1000 / 60) % 60, 10); //计算剩分钟数
+  let seconds = parseInt((remainingTime / 1000) % 60, 10); //计算剩余秒数
+  days = checkTime(days).toString();
+  hours = checkTime(hours).toString();
+  minutes = checkTime(minutes).toString();
+  seconds = checkTime(seconds).toString();
+  return days + " : " + hours + " : " + minutes + " : " + seconds;
+};
+// 获取倒计时时间
+export const countDown = (dom: string, reminderTime: string) => {
+  setInterval(function () {
+    if (document.getElementById(dom)) {
+      (document.getElementById(dom) as HTMLDivElement).innerHTML = reminderTime
+        ? countDownTime(reminderTime)
+        : "";
+    }
+  }, 1000);
+  return countDownTime(reminderTime);
+};
+
 /**
  * @desc
  * @param { File } 文件file

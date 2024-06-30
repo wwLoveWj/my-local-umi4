@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Card, Button, Flex, Row, Col, Input, Popconfirm } from "antd";
 import type { SearchProps } from "antd/es/input/Search";
 import { AlertOutlined, AudioOutlined } from "@ant-design/icons";
@@ -11,13 +11,14 @@ import {
 import ReminderTimeModal from "./components/ReminderTimeModal";
 import { useRequest } from "ahooks";
 import styles from "./style.less";
-import { guid } from "@/utils";
+import { guid, countDown } from "@/utils";
 import dayjs from "dayjs";
 import "./style.less";
 
 const STATUS_TYPE = new Map([
   ["1", "completed"],
   ["0", "pendding"],
+  ["2", "todoing"],
 ]);
 const { Search } = Input;
 const Index = () => {
@@ -60,7 +61,7 @@ const Index = () => {
   //   创建任务信息卡片
   const createReminderTask = useRequest(
     (task: string) =>
-      createReminderTaskAPI({ task, taskId: guid(), status: 0 }),
+      createReminderTaskAPI({ task, taskId: guid(), status: 2 }),
     {
       debounceWait: 100,
       manual: true,
@@ -103,6 +104,7 @@ const Index = () => {
   const onSearch: SearchProps["onSearch"] = (value) => {
     createReminderTask.run(value);
   };
+
   return (
     <div className={styles.taskInfo}>
       <div className={styles.completedTotal}>
@@ -110,7 +112,7 @@ const Index = () => {
           taskList.filter((item) => Number(item.status) === 1)?.length
         }条`}</span>
         <span>{`未完成：${
-          taskList.filter((item) => Number(item.status) === 0)?.length
+          taskList.filter((item) => Number(item.status) !== 1)?.length
         }条`}</span>
       </div>
       <Search
@@ -137,7 +139,6 @@ const Index = () => {
                 className={styles.animateCard}
                 bodyStyle={{ padding: "18px 20px" }}
                 loading={queryQueryTaskInfo.loading}
-                // bordered={}
               >
                 <Flex wrap gap="small" vertical>
                   <div className={styles.taskHeader}>
@@ -151,7 +152,9 @@ const Index = () => {
                           color:
                             STATUS_TYPE.get(item.status) === "completed"
                               ? "#44b06c"
-                              : "#ffc045",
+                              : Number(item.status) === 0
+                              ? "#ffc045"
+                              : "yellow",
                         }}
                       >
                         状态：{STATUS_TYPE.get(item.status)}
@@ -189,7 +192,16 @@ const Index = () => {
                       {dayjs(item.createTime).format("YYYY-MM-DD HH:mm:ss")}
                     </p>
                     {item.reminderTime && <p>提醒时间：{item.reminderTime}</p>}
-                    {item.reminderTime && <p>剩余时间：{item.reminderTime}</p>}
+                    <div style={{ display: "flex" }}>
+                      {item.reminderTime &&
+                        Number(item.status) === 0 &&
+                        `剩余时间：`}
+                      {item.reminderTime && Number(item.status) === 0 && (
+                        <p id={`${item.taskId}`}>
+                          {countDown(item.taskId, item.reminderTime)}
+                        </p>
+                      )}
+                    </div>
                   </div>
                   <div className="btn">
                     <Popconfirm
