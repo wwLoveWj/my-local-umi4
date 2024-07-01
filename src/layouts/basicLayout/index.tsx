@@ -1,6 +1,6 @@
 import { Outlet, useLocation, useIntl, useRouteProps, KeepAlive } from "umi";
 // import { KeepAlive } from "umi-plugin-keep-alive";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   LaptopOutlined,
   NotificationOutlined,
@@ -25,7 +25,7 @@ import LangChgIndex from "./components/LangChgIndex";
 import SideBarRender from "./components/Menu";
 import SwitchTheme from "@/components/switchTheme";
 import PageTabs from "./components/PageTabs";
-import { getAllNodes, getTagTitle } from "@/utils";
+import { getAllNodes, getTagTitle, getCurrentTime } from "@/utils";
 import type { MenuProps } from "antd";
 import type { RouterItem, MenuType } from "./type";
 import "./style.less";
@@ -43,6 +43,8 @@ interface Iprops {
   projectName: string;
 }
 const Index: React.FC<Iprops> = ({ avatarItems, rolesList, projectName }) => {
+  const countDownTimer = useRef<any>(null); // 倒计时标记
+  const [timeView, setTimeView] = useState<any>(null); // 倒计时显示
   const connectInfo = (window.navigator as any).connection;
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -119,6 +121,15 @@ const Index: React.FC<Iprops> = ({ avatarItems, rolesList, projectName }) => {
     pathname !== "/" && initSetTabs(pathname);
   }, [pathname, lang]);
 
+  useEffect(() => {
+    countDownTimer.current = setInterval(() => {
+      setTimeView(getCurrentTime());
+    }, 1000);
+    return () => {
+      clearInterval(countDownTimer.current);
+    };
+  }, []);
+
   return (
     <Layout>
       <Layout>
@@ -160,6 +171,7 @@ const Index: React.FC<Iprops> = ({ avatarItems, rolesList, projectName }) => {
                 <span>延迟：{connectInfo.rtt}ms</span>
                 <span>带宽：{connectInfo.downlink} Mb/s</span>
               </div>
+              <div style={{ color: "#fff" }}>{timeView}</div>
               {/* 语言的切换 */}
               {rolesList.includes("admin") && (
                 <LangChgIndex themeColor={themeColorLang} />

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Card, Button, Flex, Row, Col, Input, Popconfirm } from "antd";
 import type { SearchProps } from "antd/es/input/Search";
 import { AlertOutlined, AudioOutlined } from "@ant-design/icons";
@@ -7,6 +7,7 @@ import {
   reminderTaskAPI,
   createReminderTaskAPI,
   deleteReminderTaskAPI,
+  reminderTimeTaskAPI,
 } from "@/service/api/task";
 import ReminderTimeModal from "./components/ReminderTimeModal";
 import { useRequest } from "ahooks";
@@ -20,6 +21,7 @@ const STATUS_TYPE = new Map([
   ["0", "pendding"],
   ["2", "todoing"],
 ]);
+// TODO:表单填写的校验和封装-------------------倒计时相关优化
 const { Search } = Input;
 const Index = () => {
   const [taskList, setTaskList] = useState<API.taskListType[]>([]);
@@ -39,6 +41,25 @@ const Index = () => {
       setTaskList(res);
     },
   });
+  // 创建定时任务队列
+  const reminderTimeTaskFn = useRequest(
+    (params: {
+      userEmail: string;
+      reminderContent: string;
+      reminderTime: string;
+      taskId: string;
+    }) => reminderTimeTaskAPI(params),
+    {
+      debounceWait: 100,
+      manual: true,
+      onSuccess: () => {
+        queryQueryTaskInfo.run();
+        // 语音提示用户任务
+        // const utterThis = new window.SpeechSynthesisUtterance(taskDetails.task);
+        // window.speechSynthesis.speak(utterThis);
+      },
+    }
+  );
   // 任务定时提醒接口
   const reminderTaskFn = useRequest(
     (params: {
@@ -50,11 +71,11 @@ const Index = () => {
     {
       debounceWait: 100,
       manual: true,
-      onSuccess: () => {
+      onSuccess: (res) => {
+        if (res) {
+          reminderTimeTaskFn.run(res.data);
+        }
         queryQueryTaskInfo.run();
-        // 语音提示用户任务
-        // const utterThis = new window.SpeechSynthesisUtterance(taskDetails.task);
-        // window.speechSynthesis.speak(utterThis);
       },
     }
   );
@@ -192,18 +213,8 @@ const Index = () => {
                       {dayjs(item.createTime).format("YYYY-MM-DD HH:mm:ss")}
                     </p>
                     {item.reminderTime && <p>提醒时间：{item.reminderTime}</p>}
-                    <div style={{ display: "flex" }}>
-                      {item.reminderTime &&
-                        Number(item.status) === 0 &&
-                        `剩余时间：`}
-                      {item.reminderTime && Number(item.status) === 0 && (
-                        <p id={`${item.taskId}`}>
-                          {countDown(item.taskId, item.reminderTime)}
-                        </p>
-                      )}
-                    </div>
                   </div>
-                  <div className="btn">
+                  <div className={styles.delBtn}>
                     <Popconfirm
                       title={`确定要删除【${item.task}】任务吗？`}
                       placement="topLeft"
@@ -215,6 +226,20 @@ const Index = () => {
                         删除
                       </Button>
                     </Popconfirm>
+                    <div className={styles.countDown}>
+                      {item.reminderTime &&
+                        Number(item.status) === 0 &&
+                        `倒计时：`}
+                      {item.reminderTime && Number(item.status) === 0 && (
+                        <p id={`${item.taskId}`}>
+                          {countDown(
+                            item.taskId,
+                            item.reminderTime,
+                            Number(item.status)
+                          )}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </Flex>
               </Card>

@@ -10,19 +10,19 @@ export const guid = () => {
   });
 };
 
-export const countDownTime = (reminderTime: string) => {
-  // 只有一位数字时添加“0”
-  const checkTime = function (i: number) {
-    if (i < 10) {
-      if (i < 0) {
-        i = "00";
-      } else {
-        i = "0" + i;
-      }
+// 只有一位数字时添加“0”
+const checkTime = function (i: number) {
+  if (i < 10) {
+    if (i < 0) {
+      i = "00";
+    } else {
+      i = "0" + i;
     }
+  }
 
-    return i;
-  };
+  return i;
+};
+export const countDownTime = (reminderTime: string) => {
   //获取当前时间距离截止时间的倒计时
   //参数为截止时间
   const remainingTime = new Date(reminderTime) - new Date(); //计算剩余毫秒数
@@ -37,17 +37,43 @@ export const countDownTime = (reminderTime: string) => {
   return days + " : " + hours + " : " + minutes + " : " + seconds;
 };
 // 获取倒计时时间
-export const countDown = (dom: string, reminderTime: string) => {
-  setInterval(function () {
+export const countDown = (
+  dom: string,
+  reminderTime: string,
+  status: number
+) => {
+  let timer = setInterval(function () {
     if (document.getElementById(dom)) {
       (document.getElementById(dom) as HTMLDivElement).innerHTML = reminderTime
         ? countDownTime(reminderTime)
         : "";
     }
   }, 1000);
+  // if (status === 1) {
+  //   // clearInterval(timer);
+  // }
   return countDownTime(reminderTime);
 };
+//毫秒数转换成时间
+export const getCurrentTime = function (milliseconds?: string) {
+  var myDate = new Date();
+  var year = myDate.getFullYear();
+  var month = myDate.getMonth() + 1;
+  var day = myDate.getDate();
+  var hour = myDate.getHours();
+  var minute = myDate.getMinutes();
+  var second = myDate.getSeconds();
 
+  month = checkTime(month).toString();
+  day = checkTime(day).toString();
+  hour = checkTime(hour).toString();
+  minute = checkTime(minute).toString();
+  second = checkTime(second).toString();
+
+  return (
+    year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second
+  );
+};
 /**
  * @desc
  * @param { File } 文件file
