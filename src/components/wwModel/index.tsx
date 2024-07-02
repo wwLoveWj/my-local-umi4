@@ -7,8 +7,9 @@ interface Iprops {
   title: string;
   isOpenModel: boolean;
   hideModal: () => void;
-  submitModal: () => void;
+  submitModal?: () => void;
   children: any;
+  footer?: React.ReactNode;
 }
 const LocalizedModal: React.FC<Iprops> = ({
   title,
@@ -16,6 +17,7 @@ const LocalizedModal: React.FC<Iprops> = ({
   hideModal,
   submitModal,
   children,
+  footer,
 }) => {
   return (
     <>
@@ -26,6 +28,7 @@ const LocalizedModal: React.FC<Iprops> = ({
         onCancel={hideModal}
         okText="确认"
         cancelText="取消"
+        footer={footer}
         // footer={(_, { CancelBtn }) => (
         //   <>
         //     <CancelBtn />

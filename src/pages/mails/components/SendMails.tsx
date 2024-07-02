@@ -2,7 +2,7 @@ import React, { useImperativeHandle, forwardRef, useState } from "react";
 import { Form, Input, Select } from "antd";
 import { useRequest } from "ahooks";
 import { MailInfoSendAPI } from "@/service/api/mails";
-import { UserInfo } from "@/service/api/user";
+import { QueryUserInfoAPI } from "@/service/api/user";
 import UploadImage from "@/pages/files/index";
 const { TextArea } = Input;
 
@@ -16,7 +16,7 @@ const Index = forwardRef(({}, preantRef) => {
   /**
    * 查询用户信息接口
    */
-  useRequest(() => UserInfo(), {
+  useRequest(QueryUserInfoAPI, {
     debounceWait: 100,
     onSuccess: (res: any) => {
       setReceiverList(res);

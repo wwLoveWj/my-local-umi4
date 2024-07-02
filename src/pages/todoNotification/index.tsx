@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Card, Button, Flex, Row, Col, Input, Popconfirm } from "antd";
+import { Card, Button, Flex, Row, Col, Input, Popconfirm, Form } from "antd";
 import type { SearchProps } from "antd/es/input/Search";
 import { AlertOutlined, AudioOutlined } from "@ant-design/icons";
 import {
@@ -24,6 +24,7 @@ const STATUS_TYPE = new Map([
 // TODO:表单填写的校验和封装-------------------倒计时相关优化
 const { Search } = Input;
 const Index = () => {
+  const [form] = Form.useForm();
   const [taskList, setTaskList] = useState<API.taskListType[]>([]);
   const [isOpenModel, setIsOpenModel] = useState<boolean>(false);
   const [taskName, setTaskName] = useState("");
@@ -88,6 +89,7 @@ const Index = () => {
       manual: true,
       onSuccess: () => {
         setTaskName("");
+        form.resetFields();
         queryQueryTaskInfo.run();
       },
     }
@@ -123,7 +125,9 @@ const Index = () => {
   );
   //   创建任务
   const onSearch: SearchProps["onSearch"] = (value) => {
-    createReminderTask.run(value);
+    form.validateFields().then(() => {
+      createReminderTask.run(value);
+    });
   };
 
   return (
@@ -136,19 +140,32 @@ const Index = () => {
           taskList.filter((item) => Number(item.status) !== 1)?.length
         }条`}</span>
       </div>
-      <Search
-        placeholder="创建任务提醒"
-        enterButton="Add"
-        size="large"
-        className={styles.createTask}
-        suffix={suffix}
-        value={taskName}
-        onSearch={onSearch}
-        onChange={(e) => {
-          let value = e.target.value;
-          setTaskName(value);
-        }}
-      />
+      <Form
+        name="basic"
+        form={form}
+        // labelCol={{ span: 8 }}
+        // wrapperCol={{ span: 16 }}
+        autoComplete="off"
+      >
+        <Form.Item
+          name="task"
+          rules={[{ required: true, message: "请输入您想创建的任务..." }]}
+        >
+          <Search
+            placeholder="创建任务提醒"
+            enterButton="Add"
+            size="large"
+            className={styles.createTask}
+            suffix={suffix}
+            value={taskName}
+            onSearch={onSearch}
+            onChange={(e) => {
+              let value = e.target.value;
+              setTaskName(value);
+            }}
+          />
+        </Form.Item>
+      </Form>
       <Row
         gutter={[16, 12]}
         style={{ padding: "0 12px 12px", width: `calc(100% + 8px)` }}

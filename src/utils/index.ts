@@ -36,13 +36,15 @@ export const countDownTime = (reminderTime: string) => {
   seconds = checkTime(seconds).toString();
   return days + " : " + hours + " : " + minutes + " : " + seconds;
 };
+let timer: any = null;
 // 获取倒计时时间
 export const countDown = (
   dom: string,
   reminderTime: string,
   status: number
 ) => {
-  let timer = setInterval(function () {
+  clearInterval(timer);
+  timer = setInterval(function () {
     if (document.getElementById(dom)) {
       (document.getElementById(dom) as HTMLDivElement).innerHTML = reminderTime
         ? countDownTime(reminderTime)

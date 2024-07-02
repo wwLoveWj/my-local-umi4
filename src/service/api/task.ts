@@ -12,7 +12,16 @@ export const deleteReminderTaskAPI = (params = {}): Promise<any> => {
   return request.post("/task/delete", params);
 };
 // 创建任务提醒
-export const reminderTaskAPI = (params = {}): Promise<any> => {
+export const reminderTaskAPI = (
+  params = {}
+): Promise<{
+  data: {
+    userEmail: string;
+    reminderContent: string;
+    reminderTime: string;
+    taskId: string;
+  };
+}> => {
   return request.post("/reminder/task", params);
 };
 // 创建定时任务

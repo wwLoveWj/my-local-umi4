@@ -6,6 +6,6 @@ export const Login = () => {
   }>("/api/user/login");
 };
 
-export const UserInfo = (params = {}): Promise<any> => {
+export const QueryUserInfoAPI = (params = {}): Promise<any> => {
   return request.get("/userInfo", params);
 };
