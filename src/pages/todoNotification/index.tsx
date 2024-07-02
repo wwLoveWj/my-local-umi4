@@ -1,5 +1,16 @@
 import React, { useRef, useState } from "react";
-import { Card, Button, Flex, Row, Col, Input, Popconfirm, Form } from "antd";
+import {
+  Card,
+  Button,
+  Flex,
+  Row,
+  Col,
+  Input,
+  Popconfirm,
+  Form,
+  Checkbox,
+  Alert,
+} from "antd";
 import type { SearchProps } from "antd/es/input/Search";
 import { AlertOutlined, AudioOutlined } from "@ant-design/icons";
 import {
@@ -8,6 +19,7 @@ import {
   createReminderTaskAPI,
   deleteReminderTaskAPI,
   reminderTimeTaskAPI,
+  batchDelTaskListAPI,
 } from "@/service/api/task";
 import ReminderTimeModal from "./components/ReminderTimeModal";
 import { useRequest } from "ahooks";
@@ -34,12 +46,17 @@ const Index = () => {
       taskId: string;
     }>
   >({});
+  const [taskIdList, setTaskIdList] = useState<string[]>([]);
+  const [allChecked, setAllChecked] = useState(false);
   const timeRef = useRef(null);
   // 请求任务卡片列表信息
   const queryQueryTaskInfo = useRequest(() => QueryTaskInfoAPI({}), {
     debounceWait: 100,
     onSuccess: (res: API.taskListType[]) => {
-      setTaskList(res);
+      for (let i = 0; i < res.length; i++) {
+        res[i].checked = false;
+      }
+      setTaskList([...res]);
     },
   });
   // 创建定时任务队列
@@ -104,6 +121,15 @@ const Index = () => {
       },
     }
   );
+  // 批量删除任务
+  const batchDelTaskListFn = useRequest(batchDelTaskListAPI, {
+    debounceWait: 100,
+    manual: true,
+    onSuccess: () => {
+      setAllChecked(false);
+      queryQueryTaskInfo.run();
+    },
+  });
   //   发送任务提醒
   const getReminderTime = (param: any) => {
     setIsOpenModel(false);
@@ -130,6 +156,40 @@ const Index = () => {
     });
   };
 
+  // 单选checkbox
+  const selectedTask = (index: number) => {
+    let tmpUsers = [...taskList];
+    tmpUsers[index].checked = !tmpUsers[index].checked;
+    const arr = [...taskIdList];
+    if (tmpUsers[index].checked) {
+      arr.push(tmpUsers[index].taskId);
+    } else {
+      const i = arr.findIndex((taskId) => taskId === tmpUsers[index].taskId);
+      arr.splice(i, 1);
+    }
+    setTaskIdList([...arr]);
+    setTaskList([...tmpUsers]);
+  };
+  // 全选卡片checkbox
+  const selectAllTasks = () => {
+    setAllChecked(!allChecked);
+    let tmpUsers = [...taskList];
+    for (let i = 0; i < tmpUsers.length; i++) {
+      tmpUsers[i].checked = !allChecked;
+    }
+    let arr: string[] = [];
+    tmpUsers.map((item) => {
+      if (item.checked) {
+        arr.push(item.taskId);
+      } else {
+        const index = arr.findIndex((taskId) => taskId === item.taskId);
+        arr.splice(index, 1);
+      }
+    });
+    setTaskIdList([...arr]);
+    setTaskList([...tmpUsers]);
+  };
+
   return (
     <div className={styles.taskInfo}>
       <div className={styles.completedTotal}>
@@ -143,9 +203,8 @@ const Index = () => {
       <Form
         name="basic"
         form={form}
-        // labelCol={{ span: 8 }}
-        // wrapperCol={{ span: 16 }}
         autoComplete="off"
+        className={styles.searchForm}
       >
         <Form.Item
           name="task"
@@ -166,18 +225,47 @@ const Index = () => {
           />
         </Form.Item>
       </Form>
+      <div className={styles.allSelected}>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Checkbox checked={allChecked} onChange={selectAllTasks}>
+            全选
+          </Checkbox>
+          <Alert
+            message={`当前选中任务数：${taskIdList.length}项`}
+            type="info"
+            showIcon
+            banner={true}
+            style={{ width: "200px", color: "#1677ff" }}
+          />
+        </div>
+        <Button
+          danger
+          type="primary"
+          disabled={taskIdList.length === 0}
+          onClick={() => batchDelTaskListFn.run({ taskIdList })}
+        >
+          批量删除
+        </Button>
+      </div>
       <Row
         gutter={[16, 12]}
         style={{ padding: "0 12px 12px", width: `calc(100% + 8px)` }}
       >
-        {taskList.map((item) => {
+        {taskList.map((item, index) => {
           return (
             <Col span={8} key={item.taskId}>
               <Card
                 className={styles.animateCard}
-                bodyStyle={{ padding: "18px 20px" }}
+                bodyStyle={{
+                  padding: "18px 20px",
+                  background: item.checked ? "orange" : "#f8f9fa",
+                }}
                 loading={queryQueryTaskInfo.loading}
               >
+                <Checkbox
+                  checked={item.checked}
+                  onChange={() => selectedTask(index)}
+                />
                 <Flex wrap gap="small" vertical>
                   <div className={styles.taskHeader}>
                     <div>

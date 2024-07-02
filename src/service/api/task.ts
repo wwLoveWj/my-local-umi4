@@ -11,6 +11,10 @@ export const createReminderTaskAPI = (params = {}): Promise<any> => {
 export const deleteReminderTaskAPI = (params = {}): Promise<any> => {
   return request.post("/task/delete", params);
 };
+// 批量删除任务
+export const batchDelTaskListAPI = (params = {}): Promise<any> => {
+  return request.post("/task/batch/delete", params);
+};
 // 创建任务提醒
 export const reminderTaskAPI = (
   params = {}
