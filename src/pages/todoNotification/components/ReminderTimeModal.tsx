@@ -60,11 +60,13 @@ const Index = ({
     const currentSeconds = dayjs().second(); //设置的时间
     const settingHours = dayjs(date).hour();
     const settingDay = dayjs(date).date();
+
     if (date && settingDay === currentDay && settingHours === currentHours) {
+      // 这里需要分几种情况去禁用秒针
       return {
         disabledHours: () => range(0, currentHours), //设置为当天现在这小时，禁用该小时，该分钟之前的时间
         disabledMinutes: () => range(0, currentMinutes),
-        disabledSeconds: () => range(0, currentSeconds),
+        // disabledSeconds: () => range(0, currentSeconds),
       };
     } else if (
       date &&
