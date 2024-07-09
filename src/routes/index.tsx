@@ -114,6 +114,34 @@ export const routes = [
         component: "./todoNotification/index",
       },
       {
+        key: "user",
+        title: "router.users",
+        path: "/user",
+        wrappers: ["@/wrappers/auth"],
+        component: "./userInfo/index.tsx",
+      },
+      {
+        key: "integral",
+        title: "router.integral",
+        path: "/integral",
+        icon: NotificationOutlined,
+        routes: [
+          {
+            key: "table",
+            title: "router.integral.table",
+            path: "/integral/table",
+            component: "./integral/index",
+          },
+          {
+            key: "details",
+            title: "router.integral.details",
+            path: "/integral/details",
+            component: "./integral/Details",
+            hidden: true,
+          },
+        ],
+      },
+      {
         key: "article",
         title: "router.article",
         path: "/article",
