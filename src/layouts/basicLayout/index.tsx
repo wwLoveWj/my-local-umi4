@@ -150,6 +150,7 @@ const Index: React.FC<Iprops> = ({ avatarItems, rolesList, projectName }) => {
           <Header
             style={{
               background: themeColor,
+              display: "none",
             }}
             className="allHeaderInfo"
           >
@@ -202,10 +203,39 @@ const Index: React.FC<Iprops> = ({ avatarItems, rolesList, projectName }) => {
               </Dropdown>
             </div>
           </Header>
-          <Breadcrumb
-            style={{ padding: "6px 12px", background: "#fff" }}
-            items={breadcrumbItems}
-          />
+          <div className="settings-right">
+            <Breadcrumb
+              style={{ padding: "6px 12px", background: "#fff" }}
+              items={breadcrumbItems}
+            />
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                position: "absolute",
+                right: "18px",
+                top: "18px",
+              }}
+            >
+              <div>{timeView}</div>
+              <Dropdown
+                menu={{ items: avatarItems }}
+                placement="bottomRight"
+                arrow
+              >
+                <Badge count={1}>
+                  <Avatar
+                    src="https://api.dicebear.com/7.x/miniavs/svg?seed=1"
+                    style={{
+                      backgroundColor: "#f56a00",
+                      marginLeft: "12px",
+                      cursor: "pointer",
+                    }}
+                  />
+                </Badge>
+              </Dropdown>
+            </div>
+          </div>
           {/* 打开的路由页签 */}
           <PageTabs />
           <Layout style={{ padding: 12 }}>
@@ -218,7 +248,7 @@ const Index: React.FC<Iprops> = ({ avatarItems, rolesList, projectName }) => {
                 borderRadius: borderRadiusLG,
                 // background: "#fff",
                 // 高度需要减去headers、面包屑这些
-                height: "calc(100vh - 152px)",
+                height: "calc(100vh - 152px + 64px)",
                 overflow: "auto",
               }}
             >

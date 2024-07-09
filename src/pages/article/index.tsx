@@ -98,7 +98,7 @@ const Index: React.FC = () => {
   ];
 
   return (
-    <>
+    <div className="layout-padding-white">
       <div style={{ marginBottom: 16 }}>
         <Space size="small">
           <Button
@@ -119,7 +119,7 @@ const Index: React.FC = () => {
         // scroll={{ y: "max-content" }}
         size="small"
       />
-    </>
+    </div>
   );
 };
 

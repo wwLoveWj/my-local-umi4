@@ -2,10 +2,12 @@ import {
   LaptopOutlined,
   NotificationOutlined,
   UserOutlined,
+  PayCircleOutlined,
   OpenAIOutlined,
   TagsOutlined,
   SendOutlined,
   BellOutlined,
+  ReadOutlined,
   HomeOutlined,
   AudioOutlined,
 } from "@ant-design/icons";
@@ -117,6 +119,7 @@ export const routes = [
         key: "user",
         title: "router.users",
         path: "/user",
+        icon: UserOutlined,
         wrappers: ["@/wrappers/auth"],
         component: "./userInfo/index.tsx",
       },
@@ -124,7 +127,7 @@ export const routes = [
         key: "integral",
         title: "router.integral",
         path: "/integral",
-        icon: NotificationOutlined,
+        icon: PayCircleOutlined,
         routes: [
           {
             key: "table",
@@ -145,7 +148,7 @@ export const routes = [
         key: "article",
         title: "router.article",
         path: "/article",
-        icon: BellOutlined,
+        icon: ReadOutlined,
         // component: "./article/index",
         routes: [
           {
