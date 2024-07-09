@@ -86,7 +86,7 @@ const Index: React.FC = () => {
             onClick={() => {
               history.push(
                 {
-                  pathname: "/user-integral/integral-details",
+                  pathname: "/integral/details",
                 },
                 { ...record }
               );
