@@ -4,10 +4,14 @@ import { IDomEditor, IEditorConfig, IToolbarConfig } from "@wangeditor/core";
 // ------------websocket的创建关闭及心跳应答--------------------
 import { createWebSocket, closeWebSocket, websocket } from "./websocket";
 import { useRequest } from "ahooks";
-import { setEditorHtmlAPI, getEditorHtmlAPI } from "@/service/api/editor";
+import {
+  createArticleInfoAPI,
+  editArticleInfoAPI,
+  queryArticleDetailsAPI,
+} from "@/service/api/article";
 import React, { useState, useEffect } from "react";
 import { Button, Affix, Tooltip } from "antd";
-import { useLocation } from "umi";
+import { history } from "umi";
 import _ from "lodash-es";
 // 获取锚点、目录等公共方法
 import {
@@ -21,7 +25,7 @@ import styles from "./style.less";
 import "./style.less";
 import type { EditorTxtType, CatalogueType, Iprops } from "./type";
 
-function MyEditor() {
+function MyEditor({ detailsFromProps }: { detailsFromProps: Iprops }) {
   //------------------------- 编辑器相关配置----------------------------------
   const [editor, setEditor] = useState<IDomEditor | null>(null); // editor 实例
   const [html, setHtml] = useState(""); // 编辑器内容
@@ -36,43 +40,46 @@ function MyEditor() {
     placeholder: "请输入内容...",
   };
   // ---------------------------外部使用时传递的参数-----------------------------
-  const detailsData = (useLocation() as any).state;
-  const { editorId, isRealTimeediting, action }: Iprops = detailsData || {
-    editorId: "",
-    isRealTimeediting: true,
-    action: "A",
-  };
-  //   -------------------存储编辑器内容接口---------------------
-  const AddEditorHtmlAPIRun = useRequest(
-    (params: any) => setEditorHtmlAPI(params),
+  // const detailsData = (useLocation() as any).state;
+  const {
+    editorId,
+    isRealTimeediting = true,
+    action,
+  }: Iprops = detailsFromProps;
+
+  //   获取编辑器信息
+  const searchEditorTxtApi = useRequest(
+    () => queryArticleDetailsAPI({ editorId }),
     {
       debounceWait: 100,
       manual: true,
+      onSuccess: (res: EditorTxtType[]) => {
+        // editor.restoreSelection(); //恢复选区
+        setHtml(res[0]?.editorContent);
+        setTitle(res[0]?.title);
+        editorConfig.readOnly = true;
+        editor && editor.focus(true);
+      },
     }
   );
-  //   获取编辑器信息
-  const searchEditorTxtApi = useRequest(() => getEditorHtmlAPI({ editorId }), {
-    debounceWait: 100,
-    manual: true,
-    onSuccess: (res: EditorTxtType[]) => {
-      // editor.restoreSelection(); //恢复选区
-      setHtml(res[0]?.editorContent);
-      setTitle(res[0]?.title);
-      editorConfig.readOnly = true;
-      editor && editor.focus(true);
-    },
-  });
 
   // 编辑器的数据保存提交事件
-  const saveEditorContent = () => {
+  const saveEditorContent = async () => {
     if (editor) {
       // 将获取到的数据回显
       setHtml(editor.getHtml());
-      AddEditorHtmlAPIRun.run({
-        editorContent: editor.getHtml(),
-        editorId: action === "A" ? guid() : editorId,
-        title,
-      });
+      action === "A"
+        ? await createArticleInfoAPI({
+            editorKey: "editor-add",
+            editorId: guid(),
+            title: title || "默认title",
+          })
+        : await editArticleInfoAPI({
+            editorKey: editorId,
+            editorId,
+            title,
+          });
+      history.push("/article/table");
     }
   };
   const changeEditorDB = _.debounce(saveEditorContent, 10000);
@@ -84,7 +91,7 @@ function MyEditor() {
         websocket?.send(
           JSON.stringify({
             editorContent: editor.getHtml(),
-            editorId: action === "A" ? guid() : editorId,
+            editorKey: action === "A" ? "editor-add" : editorId,
             title,
             action,
           })
@@ -162,7 +169,7 @@ function MyEditor() {
                     websocket?.send(
                       JSON.stringify({
                         editorContent: editor.getHtml(),
-                        editorId: action === "A" ? guid() : editorId,
+                        editorKey: action === "A" ? "editor-add" : editorId,
                         title,
                         action,
                       })

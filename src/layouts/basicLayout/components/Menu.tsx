@@ -37,7 +37,7 @@ function sideBarRender({
             <SubMenu
               key={route.key}
               title={t(route.title || "")}
-              icon={React.createElement(route.icon || "")}
+              icon={route.icon && React.createElement(route.icon)}
             >
               {/*  重复调用函数渲染出子级菜单 */}
               {getMenuItem(route.routes)}
@@ -49,7 +49,7 @@ function sideBarRender({
         !route.hidden && (
           <Menu.Item
             key={route.key}
-            icon={React.createElement(route.icon || "")}
+            icon={route.icon && React.createElement(route.icon)}
           >
             <Link to={route.path || "/"}>{t(route.title || "")}</Link>
           </Menu.Item>
