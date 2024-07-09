@@ -1,0 +1,75 @@
+.allInfo {
+  display: flex;
+  width: 100%;
+  scroll-behavior: smooth;
+  margin-top: 12px;
+  .catalogue {
+    width: 200px;
+    margin-left: 20px;
+    // border: 1px solid #ccc;
+  }
+  .content {
+    flex: 1;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .catalogue {
+    display: none !important; /* 添加 !important 以确保覆盖其他样式 */
+  }
+}
+.table-of-title {
+  //   background-color: red;
+}
+.table-of-contents {
+  color: yellow;
+  //   background-color: red;
+  li:hover {
+    color: #95c92c;
+  }
+  .active {
+    font-weight: bold;
+    color: #95c92c;
+  }
+}
+// 文章标题
+.user-box {
+  input {
+    width: 80%;
+    padding: 10px 0;
+    color: green;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    outline: none;
+    font-size: 36px;
+  }
+}
+
+// 打字效果
+#typing {
+  font:
+    bold 200% Consolas,
+    Monaco,
+    monospace;
+  border-right: 0.1em solid;
+  width: 16.5em;
+  width: 26ch;
+  margin: 2em 1em;
+  white-space: nowrap;
+  overflow: hidden;
+  animation:
+    typing 3s steps(26, end),
+    cursor-blink 0.3s step-end infinite alternate;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+}
+
+@keyframes cursor-blink {
+  50% {
+    border-color: transparent;
+  }
+}

@@ -11,7 +11,7 @@ export default {
   "router.users": "用户管理",
   "router.rules": "规则管理",
   "router.echarts": "图表管理",
-  "router.articles": "文章管理",
+  "router.article": "文章管理",
   "router.articles.table": "文章列表",
   "router.articles.edit": "文章编辑",
   "router.articles.add": "文章新增",

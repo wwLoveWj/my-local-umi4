@@ -10,6 +10,14 @@ export const guid = () => {
   });
 };
 
+// 日期选择器时间的禁用
+export const range = (start: number, end: number) => {
+  const result = [];
+  for (let i = start; i < end; i++) {
+    result.push(i);
+  }
+  return result;
+};
 // 只有一位数字时添加“0”
 const checkTime = function (i: number) {
   if (i < 10) {

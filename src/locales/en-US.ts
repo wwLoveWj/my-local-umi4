@@ -11,7 +11,7 @@ export default {
   "router.users": "users-manage",
   "router.rules": "rules-manage",
   "router.echarts": "echarts-manage",
-  "router.articles": "articles-manage",
+  "router.article": "articles-manage",
   "router.articles.table": "articles-table",
   "router.articles.edit": "articles-edit",
   "router.articles.add": "articles-add",

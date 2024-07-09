@@ -113,6 +113,13 @@ export const routes = [
         icon: BellOutlined,
         component: "./todoNotification/index",
       },
+      {
+        key: "article",
+        title: "router.article",
+        path: "/article",
+        icon: BellOutlined,
+        component: "./article/index",
+      },
     ],
   },
   {
