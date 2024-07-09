@@ -10,7 +10,7 @@ import {
   ScoreInfoDeleteAPI,
   ScoreInfoAPI,
 } from "@/service/api/score";
-import DeductionScoreDrawer from "./DeductionScoreDrawer";
+import DeductionScoreDrawer from "./components/DeductionScoreDrawer";
 import DelPopconfirm from "@/components/DelPopconfirm";
 import type { DataType } from "./type.d.ts";
 
@@ -189,7 +189,7 @@ const Index: React.FC = () => {
     getScoreInfoAPI();
   }, []);
   return (
-    <>
+    <div className="layout-padding-white">
       <div style={{ marginBottom: 16 }}>
         <Space size="small">
           <Button
@@ -224,7 +224,7 @@ const Index: React.FC = () => {
           editData={editData}
         />
       )}
-    </>
+    </div>
   );
 };
 

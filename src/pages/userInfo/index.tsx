@@ -163,7 +163,7 @@ const Index: React.FC = () => {
     getUserInfo();
   }, []);
   return (
-    <>
+    <div className="layout-padding-white">
       <div style={{ marginBottom: 16 }}>
         <Space size="small">
           <Button type="primary" onClick={createUser}>
@@ -186,7 +186,7 @@ const Index: React.FC = () => {
           editData={editData}
         />
       )}
-    </>
+    </div>
   );
 };
 

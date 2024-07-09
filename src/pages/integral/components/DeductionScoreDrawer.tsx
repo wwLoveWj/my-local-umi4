@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { useRequest } from "ahooks";
 import { QueryUserInfoAPI } from "@/service/api/user";
 import { guid } from "@/utils";
-import type { UserInfoType } from "./type.d.ts";
+import type { UserInfoType } from "../type";
 
 const { Option } = Select;
 const { TextArea } = Input;

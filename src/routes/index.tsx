@@ -136,7 +136,7 @@ export const routes = [
             key: "details",
             title: "router.integral.details",
             path: "/integral/details",
-            component: "./integral/Details",
+            component: "./integral/components/Details",
             hidden: true,
           },
         ],
