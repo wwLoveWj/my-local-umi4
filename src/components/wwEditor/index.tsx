@@ -127,9 +127,6 @@ function MyEditor({ detailsFromProps }: { detailsFromProps: Iprops }) {
 
   return (
     <>
-      <Button type="primary" onClick={saveEditorContent}>
-        保存
-      </Button>
       {/* =================文章标题================== */}
       <div className="user-box">
         {/* <div id="typing">55555555555555</div> */}
@@ -142,6 +139,9 @@ function MyEditor({ detailsFromProps }: { detailsFromProps: Iprops }) {
             changeEditorTitleWs();
           }}
         />
+        <Button type="primary" onClick={saveEditorContent}>
+          更新
+        </Button>
       </div>
       <div className={styles.allInfo}>
         {/* =============编辑器部分================== */}

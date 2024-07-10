@@ -34,7 +34,13 @@
 }
 // 文章标题
 .user-box {
+  display: flex;
+  justify-content: space-between;
+  position: sticky;
+  top: 12px;
   input {
+    position: sticky;
+    top: 12px;
     width: 80%;
     padding: 10px 0;
     color: green;
@@ -47,18 +53,14 @@
 
 // 打字效果
 #typing {
-  font:
-    bold 200% Consolas,
-    Monaco,
-    monospace;
+  font: bold 200% Consolas, Monaco, monospace;
   border-right: 0.1em solid;
   width: 16.5em;
   width: 26ch;
   margin: 2em 1em;
   white-space: nowrap;
   overflow: hidden;
-  animation:
-    typing 3s steps(26, end),
+  animation: typing 3s steps(26, end),
     cursor-blink 0.3s step-end infinite alternate;
 }
 

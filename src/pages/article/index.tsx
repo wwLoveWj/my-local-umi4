@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Space, Button, Table } from "antd";
 import type { TableColumnsType } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 import { history, useLocation } from "umi";
 import dayjs from "dayjs";
 import { useRequest } from "ahooks";
@@ -15,12 +16,13 @@ const Index: React.FC = () => {
   // const [tableData, setTableData] = useState<TableDataType[]>([]); //文章信息表格
   // const detailsHistory = useLocation();
   // 查询列表信息
-  const { data: tableData, run } = useRequest(
-    (params: any) => queryArticleListAPI(params),
-    {
-      debounceWait: 100,
-    }
-  );
+  const {
+    data: tableData,
+    run,
+    loading,
+  } = useRequest((params: any) => queryArticleListAPI(params), {
+    debounceWait: 100,
+  });
   //   删除文章列表数据接口
   const DelArticleAPIRun = useRequest(
     (params: any) => delectArticleInfoAPI(params),
@@ -38,10 +40,10 @@ const Index: React.FC = () => {
     {
       title: "标题",
       dataIndex: "title",
-      width: 120,
+      width: 180,
     },
     {
-      title: "编辑内容",
+      title: "文章内容",
       dataIndex: "editorContent",
       render: (_, { editorContent }) => {
         return <p dangerouslySetInnerHTML={{ __html: editorContent }}></p>;
@@ -50,7 +52,7 @@ const Index: React.FC = () => {
     {
       title: "创建时间",
       dataIndex: "createTime",
-      width: 80,
+      width: 210,
       render: (_, { createTime }) => {
         return createTime
           ? dayjs(createTime).format("YYYY-MM-DD HH:mm:ss")
@@ -58,7 +60,7 @@ const Index: React.FC = () => {
       },
     },
     {
-      title: "Action",
+      title: "操作",
       key: "action",
       sorter: true,
       width: 120,
@@ -109,9 +111,13 @@ const Index: React.FC = () => {
           >
             写文章
           </Button>
+          <Button type="primary" icon={<SearchOutlined />} onClick={run}>
+            查询
+          </Button>
         </Space>
       </div>
       <Table
+        loading={loading}
         columns={columns}
         dataSource={tableData}
         rowKey="editorId"
