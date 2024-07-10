@@ -33,7 +33,7 @@ function sideBarRender({
       if (route.routes) {
         // 有多级菜单时
         return (
-          !route.hidden && (
+          !route.isHidden && (
             <SubMenu
               key={route.key}
               title={t(route.title || "")}
@@ -46,7 +46,7 @@ function sideBarRender({
         );
       }
       return (
-        !route.hidden && (
+        !route.isHidden && (
           <Menu.Item
             key={route.key}
             icon={route.icon && React.createElement(route.icon)}

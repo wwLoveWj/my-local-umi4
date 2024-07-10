@@ -14,6 +14,6 @@ export interface RouterItem {
   component?: any;
   exact?: boolean;
   redirect?: string;
-  hidden?: boolean;
+  isHidden?: 0; //0是显示、1是隐藏
 }
 export type MenuType = "light" | "dark";

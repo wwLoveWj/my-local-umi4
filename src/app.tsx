@@ -50,6 +50,7 @@ const menuMatch = (data: any[]) => {
       title: item.title,
       element: item.element,
       component: item.component,
+      routes: item.children,
       children: item.children,
       path: item.path,
       icon: iconMap.get(item.icon),
@@ -62,8 +63,11 @@ const menuMatch = (data: any[]) => {
 };
 // 初始化路由菜单数据
 export async function getInitialState() {
-  const routesData = await getMenuListByRole({ menuIds: "1, 2, 3, 4" });
+  const routesData = await getMenuListByRole({
+    menuIds: "1, 2, 3, 4,5,6,7,8,9",
+  });
   const routes = menuMatch(transformRoutes(routesData, 0, 0));
+
   return {
     menuRoutes: routes,
   };
@@ -86,7 +90,7 @@ export function rootContainer(container: React.ReactNode) {
 }
 
 export async function render(oldRender: any) {
-  const res = await getMenuListByRole({ menuIds: "1, 2, 3, 4" });
+  const res = await getMenuListByRole({ menuIds: "1, 2, 3, 4,5,6,7,8,9" });
   extraRoutes = transformRoutes(res, 0, 0);
   oldRender();
 }
