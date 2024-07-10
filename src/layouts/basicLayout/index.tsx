@@ -1,13 +1,19 @@
-import { Outlet, useLocation, useIntl, useRouteProps, KeepAlive } from "umi";
+import {
+  Outlet,
+  useLocation,
+  useIntl,
+  useRouteProps,
+  useModel,
+  KeepAlive,
+} from "umi";
 // import { KeepAlive } from "umi-plugin-keep-alive";
 import React, { useState, useEffect, useRef } from "react";
 import {
-  LaptopOutlined,
-  NotificationOutlined,
-  UserOutlined,
-  HomeOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  LaptopOutlined,
+  UserOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
 import {
   Breadcrumb,
@@ -32,10 +38,10 @@ import "./style.less";
 
 const { Header, Content, Sider } = Layout;
 // 获取到所有的菜单数据进行处理
-const menus =
-  routes
-    ?.find((route) => route.path === "/")
-    ?.routes?.filter((item: any) => !item.redirect) || [];
+// const menus =
+//   routes
+//     ?.find((route) => route.path === "/")
+//     ?.routes?.filter((item: any) => !item.redirect) || [];
 
 interface Iprops {
   avatarItems: MenuProps["items"];
@@ -62,7 +68,11 @@ const Index: React.FC<Iprops> = ({ avatarItems, rolesList, projectName }) => {
   // 国际化配置
   const intl = useIntl();
   const lang = intl.locale;
-  const t = (id: string) => intl.formatMessage({ id });
+  const t = (id: string) => intl.formatMessage({ id: title });
+  // 全局初始值
+  const { initialState, loading, error, refresh, setInitialState } =
+    useModel("@@initialState");
+
   // 切换主题
   const handleChange = (e: any) => {
     if (e.target.checked) {
@@ -125,6 +135,7 @@ const Index: React.FC<Iprops> = ({ avatarItems, rolesList, projectName }) => {
     countDownTimer.current = setInterval(() => {
       setTimeView(getCurrentTime());
     }, 1000);
+
     return () => {
       clearInterval(countDownTimer.current);
     };
@@ -143,7 +154,10 @@ const Index: React.FC<Iprops> = ({ avatarItems, rolesList, projectName }) => {
           <div className="logo">
             <div>{collapsed ? <UserOutlined /> : projectName}</div>
           </div>
-          <SideBarRender menus={menus} theme={themeMenu} />
+          <SideBarRender
+            menus={initialState?.menuRoutes as RouterItem[]}
+            theme={themeMenu}
+          />
         </Sider>
         {/* 右侧内容区 */}
         <Layout style={{ background: "#f0f3f4" }}>

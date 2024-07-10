@@ -4,7 +4,7 @@ import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { Modal, Tabs } from "antd";
 import React, { useEffect, useState } from "react";
 import { useAliveController } from "react-activation";
-import { history, useLocation, useIntl } from "umi";
+import { history, useLocation, useIntl, useRouteProps } from "umi";
 import { pathTxt } from "./constant";
 import style from "./style.less";
 import type { TabTypes, TagTypes } from "./type";
@@ -25,9 +25,10 @@ const PageTabs = () => {
       closable: false,
     },
   ]);
+  const { title } = useRouteProps();
   // 国际化配置
   const intl = useIntl();
-  const t = (id: string) => intl.formatMessage({ id });
+  const t = (id: string) => intl.formatMessage({ id: title });
 
   // 关闭页签
   const closeTab = (targetKey: any) => {

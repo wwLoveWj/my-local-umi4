@@ -12,7 +12,7 @@ const Index = ({ themeColor }: { themeColor: string }) => {
   const changeLocale = (value: any) => {
     setLocale(value, false); //第二个参数配置为true会刷新整个页面
   };
-  const t = (id: string) => intl.formatMessage({ id }); // 写成传参方式
+  // const t = (id: string) => intl.formatMessage({ id }); // 写成传参方式
   return (
     <div id="language-container" style={{ color: themeColor }}>
       <Select

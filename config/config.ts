@@ -12,6 +12,13 @@ export default defineConfig({
     "@assets": "/src/assets",
     "@service": "/src/service",
   },
-  plugins: ["@umijs/plugins/dist/locale", "umi-plugin-keep-alive"],
+  plugins: [
+    "@umijs/plugins/dist/initial-state",
+    "@umijs/plugins/dist/model",
+    "@umijs/plugins/dist/locale",
+    "umi-plugin-keep-alive",
+  ],
+  initialState: {},
+  model: {},
   locale: {},
 });

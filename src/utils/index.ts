@@ -208,3 +208,31 @@ export const getWebsocketParams = (APPID: string, chatInput: string) => {
     },
   };
 };
+
+/**
+ * 想要将扁平化数组转成树结构，首先必须知道顶级的pid是啥（0）
+ * 第一步，假设我们只需要找顶级的这一项，
+ * 只需要对比一下那一项的pid是这个pid即可
+ * 而后递归即可
+ * */
+// 通过pid将扁平化的数组转成树结构。给树结构添加level字段（数据库中没存，当然存也可以）
+export function transformRoutes(arr: any, pid: number, level: number) {
+  const treeArr: any = [];
+  level = level + 1; // 添加层级字段
+  arr.forEach((item) => {
+    if (item.pid === pid) {
+      // 把不是这一项的剩余几项，都丢到这个children数组里面，再进行递归（这一项已经确定了，是父级，没必要再递归了）
+      const restArr = arr.filter((item) => {
+        return item.pid !== pid;
+      });
+      item["children"] = transformRoutes(restArr, item.id, level); // 这里需要进行传id当做pid（因为自己的id就是子节点的pid）
+      if (item.children.length === 0) {
+        delete item.children;
+      } // 加一个判断，若是children: [] 即没有内容就删除，不返回给前端children字段
+      item["level"] = level; // 添加层级字段
+      // 操作完以后，把一整个的都追加到数组中去
+      treeArr.push(item);
+    }
+  });
+  return treeArr;
+}
