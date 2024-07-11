@@ -25,4 +25,5 @@ export default {
   "router.taichi": "Tai Chi",
   "router.link": "link-manage",
   "router.todo": "todo-notice",
+  "router.auth": "auth",
 };

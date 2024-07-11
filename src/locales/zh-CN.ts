@@ -25,4 +25,5 @@ export default {
   "router.taichi": "太极",
   "router.link": "链接管理",
   "router.todo": "待办通知",
+  "router.auth": "用户授权",
 };
