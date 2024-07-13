@@ -26,4 +26,5 @@ export default {
   "router.link": "link-manage",
   "router.todo": "todo-notice",
   "router.auth": "auth",
+  "router.chat": "chat",
 };

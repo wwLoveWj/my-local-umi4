@@ -8,7 +8,7 @@ import type {
 } from "axios";
 import { message as Message, notification } from "antd";
 import { history } from "umi";
-
+import { getToken } from "@/utils/localToken";
 /* 服务器返回数据的的类型，根据接口文档确定 */
 export interface Result<T = any> {
   code: number;
@@ -30,10 +30,8 @@ const instance: AxiosInstance = axios.create({
 /* 请求拦截器 */
 // 主要在这里处理请求发送前的一些工作，比如给 HTTP Header 添加 token ，开启 Loading 效果，设置取消请求等。
 instance.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    //  伪代码
-    let loginInfo = JSON.parse(localStorage.getItem("login-info") || `{}`);
-    let token = loginInfo?.token;
+  async (config: InternalAxiosRequestConfig) => {
+    let token = await getToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

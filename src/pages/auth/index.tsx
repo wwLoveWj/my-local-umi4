@@ -15,7 +15,7 @@ import { LocalizedModal as WwModel } from "@/components/wwModel/index";
 import type { DataType } from "./type.d.ts";
 
 const { TextArea } = Input;
-const Index: React.FC = () => {
+const Auth: React.FC = () => {
   const [form] = Form.useForm();
   const [openModel, setOpenModel] = useState(false);
   /**
@@ -181,4 +181,4 @@ const Index: React.FC = () => {
   );
 };
 
-export default Index;
+export default Auth;

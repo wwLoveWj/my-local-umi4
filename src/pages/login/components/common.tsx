@@ -41,10 +41,33 @@ const Index = ({
           alignItems: "center",
         }}
       >
-        <Col span={24}>
+        {status !== "login" && (
+          <Col span={24}>
+            <Form.Item
+              name="username"
+              label="用户名"
+              rules={[
+                {
+                  required: true,
+                  // validator: validEmail,
+                },
+              ]}
+            >
+              <Input
+                ref={actRef}
+                prefix={<UserOutlined className="site-form-item-icon" />}
+                placeholder="请输入您的用户名"
+                style={{ width: "360px" }}
+                allowClear
+                maxLength={64}
+              />
+            </Form.Item>
+          </Col>
+        )}
+        <Col>
           <Form.Item
-            name="username"
-            label="用户名"
+            name="email"
+            label="邮箱"
             rules={[
               {
                 required: true,
@@ -55,7 +78,7 @@ const Index = ({
             <Input
               ref={actRef}
               prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="<用户名>@<163.com>"
+              placeholder="<xxx>@<163.com>"
               style={{ width: "360px" }}
               allowClear
               maxLength={64}
@@ -65,10 +88,10 @@ const Index = ({
               }}
               onPressEnter={() => {
                 form
-                  .validateFields(["username", "password"])
+                  .validateFields(["password", "email"])
                   .then()
                   .catch((err) => {
-                    if (!err?.errorFields?.[0].name.includes("username")) {
+                    if (!err?.errorFields?.[0].name.includes("email")) {
                       if (err?.errorFields?.[0].name.includes("password")) {
                         (pwdRef.current as any).focus();
                       } else {

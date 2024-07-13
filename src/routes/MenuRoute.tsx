@@ -131,4 +131,11 @@ export const menuRoutes = [
       },
     ],
   },
+  {
+    key: "chat",
+    title: "router.chat",
+    path: "/chat",
+    icon: PayCircleOutlined,
+    component: "./chatBot/index",
+  },
 ];

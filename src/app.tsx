@@ -15,6 +15,8 @@ import {
   ReadOutlined,
   HomeOutlined,
   AudioOutlined,
+  RobotOutlined,
+  KeyOutlined,
 } from "@ant-design/icons";
 import Package from "../package.json";
 import React from "react";
@@ -22,6 +24,7 @@ import { getMenuListByRole } from "@/service/api/roles";
 import { transformRoutes } from "@/utils";
 
 let extraRoutes: any[];
+let menuIds = JSON.parse(localStorage.getItem("login-info"))?.menuIds;
 // icon对应的dom映射
 const iconMap = new Map([
   ["HomeOutlined", HomeOutlined],
@@ -32,6 +35,8 @@ const iconMap = new Map([
   ["ReadOutlined", ReadOutlined],
   ["PayCircleOutlined", PayCircleOutlined],
   ["UserOutlined", UserOutlined],
+  ["RobotOutlined", RobotOutlined],
+  ["KeyOutlined", KeyOutlined],
 ]);
 //  实现菜单所需数据的组合配置
 const menuMatch = (data: any[]) => {
@@ -42,7 +47,7 @@ const menuMatch = (data: any[]) => {
       // 重点是这里，拿到对应的js文件
       item.element = (function () {
         const PageComponent = (item.component = require("@/pages" +
-          item.component).default);
+          item.component.split(".")[1]).default);
         return <PageComponent />;
       })();
     }
@@ -63,19 +68,15 @@ const menuMatch = (data: any[]) => {
 };
 // 初始化路由菜单数据
 export async function getInitialState() {
-  const routesData = await getMenuListByRole({
-    menuIds: "1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14",
-  });
-  const routes = menuMatch(transformRoutes(routesData, 0, 0));
-
   return {
-    menuRoutes: routes,
+    menuRoutes: extraRoutes,
   };
 }
 // 应用启动时动态加载路由
 export async function patchClientRoutes({ routes }: { routes: any[] }) {
-  const arr = menuMatch(extraRoutes);
-  routes[3].routes.push(...arr);
+  if (menuIds?.length > 0) {
+    routes[3].routes.push(...extraRoutes);
+  }
 }
 
 export function rootContainer(container: React.ReactNode) {
@@ -90,9 +91,11 @@ export function rootContainer(container: React.ReactNode) {
 }
 
 export async function render(oldRender: any) {
-  const res = await getMenuListByRole({
-    menuIds: "1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14",
-  });
-  extraRoutes = transformRoutes(res, 0, 0);
+  if (menuIds?.length > 0) {
+    const routesData = await getMenuListByRole({
+      menuIds,
+    });
+    extraRoutes = menuMatch(transformRoutes(routesData, 0, 0));
+  }
   oldRender();
 }

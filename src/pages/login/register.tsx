@@ -7,6 +7,7 @@ import { history } from "umi";
 import md5 from "md5";
 import style from "./style.less";
 import CommonForm from "./components/common";
+import { guid } from "@/utils";
 import type { LoginInfoType } from "./type";
 
 export default function Index() {
@@ -20,7 +21,11 @@ export default function Index() {
    */
   const handleRegisterInfo = useRequest(
     (fieldValues: LoginInfoType) =>
-      registerUserAPI({ ...fieldValues, password: md5(fieldValues?.password) }),
+      registerUserAPI({
+        ...fieldValues,
+        password: md5(fieldValues?.password),
+        userId: guid(),
+      }),
     {
       debounceWait: 100,
       manual: true,

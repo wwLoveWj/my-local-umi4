@@ -5,6 +5,12 @@ export const getMenuListByRole = (params = {}): Promise<any> => {
     params: { ...params },
   });
 };
+// 根据用户id查询角色用户中间表再查询menuIds
+export const getMenuIdsByroleIdByUserId = (params = {}): Promise<any> => {
+  return request.get("/auth/menuIdsByroleIdByUserId", {
+    params: { ...params },
+  });
+};
 // 获取角色列表
 export const getRoleListAPI = (params = {}): Promise<any> => {
   return request.get("/auth/roleList", {
