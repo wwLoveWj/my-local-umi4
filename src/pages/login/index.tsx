@@ -5,7 +5,6 @@ import { useRequest } from "ahooks";
 import { Button } from "antd";
 import { useEffect } from "react";
 import { history } from "umi";
-import { getMenuIdsByroleIdByUserId } from "@/service/api/roles";
 import md5 from "md5";
 import style from "./style.less";
 import "./style.less";
@@ -27,17 +26,11 @@ export default function Index() {
         //   "恭喜你登录成功" + res?.username + "欢迎回来！"
         // );
         // window.speechSynthesis.speak(utterThis);
-
-        // 根据id通过链表查询到menusId
-        const result = await getMenuIdsByroleIdByUserId({
-          userId: res.userId,
-        });
         localStorage.setItem(
           "login-info",
           JSON.stringify({
             ...res,
             loginPath: "/login",
-            menuIds: result[0]?.menuIds,
           })
         );
         // history.push("/home");

@@ -20,11 +20,13 @@ import {
 } from "@ant-design/icons";
 import Package from "../package.json";
 import React from "react";
+import { getMenuIdsByroleIdByUserId } from "@/service/api/roles";
 import { getMenuListByRole } from "@/service/api/roles";
 import { transformRoutes } from "@/utils";
 
 let extraRoutes: any[];
-let menuIds = JSON.parse(localStorage.getItem("login-info"))?.menuIds;
+let menuIds = "";
+let loginInfo = JSON.parse(localStorage.getItem("login-info"));
 // icon对应的dom映射
 const iconMap = new Map([
   ["HomeOutlined", HomeOutlined],
@@ -60,6 +62,7 @@ const menuMatch = (data: any[]) => {
       path: item.path,
       icon: iconMap.get(item.icon),
       key: item.key,
+      isHidden: item.isHidden,
       // id: (item.id + 7).toString(),
       // parentId: "6",
     };
@@ -91,6 +94,11 @@ export function rootContainer(container: React.ReactNode) {
 }
 
 export async function render(oldRender: any) {
+  // 根据id通过链表查询到menusId
+  const result = await getMenuIdsByroleIdByUserId({
+    userId: loginInfo?.userId,
+  });
+  menuIds = result[0]?.menuIds;
   if (menuIds?.length > 0) {
     const routesData = await getMenuListByRole({
       menuIds,
