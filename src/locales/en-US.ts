@@ -27,4 +27,9 @@ export default {
   "router.todo": "todo-notice",
   "router.auth": "auth",
   "router.chat": "chat",
+  "router.report": "Report List",
+  "router.cost": "Cost List",
+  "router.system": "system-manage",
+  "router.system.role": "role-manage",
+  "router.system.account": "account-manage",
 };

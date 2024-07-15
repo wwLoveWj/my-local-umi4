@@ -138,4 +138,24 @@ export const menuRoutes = [
     icon: PayCircleOutlined,
     component: "./chatBot/index",
   },
+  {
+    key: "system",
+    title: "router.system",
+    path: "/system",
+    icon: ReadOutlined,
+    routes: [
+      {
+        key: "system-account",
+        title: "router.system.account",
+        path: "/system/system-account",
+        component: "./system/account/index",
+      },
+      {
+        key: "system-role",
+        title: "router.system.role",
+        path: "/system/system-role",
+        component: "./system/role/index",
+      },
+    ],
+  },
 ];

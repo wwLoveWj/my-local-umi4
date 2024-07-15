@@ -27,4 +27,9 @@ export default {
   "router.todo": "待办通知",
   "router.auth": "用户授权",
   "router.chat": "机器人",
+  "router.report": "报告清单",
+  "router.cost": "费用清单",
+  "router.system": "系统管理",
+  "router.system.role": "角色管理",
+  "router.system.account": "账户管理",
 };

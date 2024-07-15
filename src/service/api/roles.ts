@@ -17,6 +17,15 @@ export const getRoleListAPI = (params = {}): Promise<any> => {
     params: { ...params },
   });
 };
+export const createRoleAPI = (params = {}): Promise<any> => {
+  return request.post("/auth/create", params);
+};
+export const editRoleAPI = (params = {}): Promise<any> => {
+  return request.post("/auth/edit", params);
+};
+export const delectRoleAPI = (params = {}): Promise<any> => {
+  return request.post("/auth/delete", params);
+};
 // 用户授权接口
 export const createUserAuthAPI = (params = {}): Promise<any> => {
   return request.post("/auth/userAuth", params);

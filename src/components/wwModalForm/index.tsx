@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Modal, Form } from "antd";
+import { Modal, Form, Input, Select, DatePicker } from "antd";
 import { FormItemProps } from "antd/lib/form";
 import type {
   InputProps,
@@ -16,11 +16,16 @@ type AntdFormComponentProps =
   | RadioProps;
 
 interface FormFieldConfig<T extends AntdFormComponentProps = any> {
-  name: string | string[]; //表单label名
-  component: React.ComponentType<T>; //表单的类型select还是input
-  props?: T;
+  name: string;
+  label: string;
+  type: "input" | "select" | "datePicker";
+  initialValue?: string;
+  options?: { value: string; label: string }[];
   rules?: FormItemProps["rules"];
+  fieldProps: Record<string, any>;
+  formItemProps: any;
 }
+
 // modal的props及from的props
 interface ModalFormConfig {
   title: string;
@@ -56,9 +61,50 @@ const ConfigurableModalForm: React.FC<ModalFormConfig> = ({
       onCancel={onCancel}
     >
       <Form form={form} layout="vertical">
-        {formFields.map((field, index) => (
-          <Form.Item key={index} name={field.name} rules={field.rules}>
-            <field.component {...field.props} />
+        {formFields.map((field) => (
+          <Form.Item
+            {...field?.formItemProps}
+            key={field.name}
+            name={field.name}
+            label={field.label}
+            initialValue={field.initialValue}
+            style={{ width: "100%" }}
+          >
+            {(() => {
+              switch (field.type) {
+                case "input":
+                  return (
+                    <Input
+                      {...field?.fieldProps}
+                      style={{ width: "100%" }}
+                      placeholder={`请输入${field.label}`}
+                    />
+                  );
+                case "select":
+                  return (
+                    <Select
+                      {...field?.fieldProps}
+                      style={{ width: "100%" }}
+                      placeholder={`请选择${field.label}`}
+                    >
+                      {field.options?.map((option) => (
+                        <Select.Option key={option.value} value={option.value}>
+                          {option.label}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  );
+                case "datePicker":
+                  return (
+                    <DatePicker
+                      {...field?.fieldProps}
+                      style={{ width: "100%" }}
+                    />
+                  );
+                default:
+                  return null;
+              }
+            })()}
           </Form.Item>
         ))}
       </Form>
@@ -70,10 +116,16 @@ const useModalForm = () => {
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
 
-  const openModal = useCallback(() => {
-    setVisible(true);
-    form.resetFields();
-  }, [form]);
+  const openModal = useCallback(
+    (action: string, record?: any) => {
+      setVisible(true);
+      form.resetFields();
+      if (action === "E") {
+        form.setFieldsValue(record);
+      }
+    },
+    [form]
+  );
 
   const closeModal = useCallback(() => {
     setVisible(false);
