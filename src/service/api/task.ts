@@ -25,6 +25,7 @@ export const reminderTaskAPI = (
     reminderTime: string;
     taskId: string;
     reminderPattern: string;
+    interval: string;
   };
 }> => {
   return request.post("/reminder/task", params);

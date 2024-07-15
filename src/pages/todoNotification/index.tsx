@@ -32,6 +32,15 @@ import { guid, countDown, disabledDate, disabledRangeTime } from "@/utils";
 import dayjs from "dayjs";
 import "./style.less";
 
+const IntervalUnit = new Map([
+  ["second", "秒"],
+  ["minute", "分钟"],
+  ["hour", "小时"],
+  ["day", "日"],
+  ["week", "周"],
+  ["month", "月"],
+  ["year", "年"],
+]);
 const STATUS_TYPE = new Map([
   ["1", "completed"],
   ["0", "pendding"],
@@ -427,16 +436,25 @@ const Index = () => {
                         创建时间：
                         {dayjs(item.createTime).format("YYYY-MM-DD HH:mm:ss")}
                       </p>
-                      {item.reminderTime && (
-                        <p style={{ color: item.checked ? "#fff" : "#000" }}>
-                          提醒时间：
-                          {item.reminderPattern !== "intervalTime"
-                            ? dayjs(item.reminderTime).format(
-                                "YYYY-MM-DD HH:mm:ss"
-                              )
-                            : item.reminderTime}
-                        </p>
-                      )}
+                      {item.reminderTime &&
+                        item.reminderPattern !== "intervalTime" && (
+                          <p style={{ color: item.checked ? "#fff" : "#000" }}>
+                            提醒时间：
+                            {dayjs(item.reminderTime).format(
+                              "YYYY-MM-DD HH:mm:ss"
+                            )}
+                          </p>
+                        )}
+                      {item.reminderTime &&
+                        item.reminderPattern === "intervalTime" && (
+                          <p>
+                            提醒间隔：
+                            <span style={{ color: "green" }}>
+                              {item.reminderTime}{" "}
+                              {IntervalUnit.get(item.intervalUnit)}
+                            </span>
+                          </p>
+                        )}
                     </div>
                     <div className={styles.delBtn}>
                       <span onClick={(e) => e.stopPropagation()}>
@@ -452,20 +470,20 @@ const Index = () => {
                           </Button>
                         </Popconfirm>
                       </span>
-                      <div className={styles.countDown}>
-                        {item.reminderTime &&
-                          Number(item.status) === 0 &&
-                          `倒计时：`}
-                        {item.reminderTime && Number(item.status) === 0 && (
-                          <p id={`${item.taskId}`}>
-                            {countDown(
-                              item.taskId,
-                              item.reminderTime,
-                              Number(item.status)
-                            )}
-                          </p>
+                      {item.reminderTime &&
+                        Number(item.status) === 0 &&
+                        item.reminderPattern !== "intervalTime" && (
+                          <div className={styles.countDown}>
+                            倒计时：
+                            <p id={`${item.taskId}`}>
+                              {countDown(
+                                item.taskId,
+                                item.reminderTime,
+                                Number(item.status)
+                              )}
+                            </p>
+                          </div>
                         )}
-                      </div>
                     </div>
                   </Flex>
                 </Card>

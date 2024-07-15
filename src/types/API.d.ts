@@ -25,6 +25,7 @@ declare namespace API {
     createTime: string;
     reminderTime: string;
     reminderPattern: string;
+    intervalUnit: string;
     status: string;
     checked: boolean;
   }
