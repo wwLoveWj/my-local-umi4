@@ -1,6 +1,8 @@
 import { FunctionComponent, ComponentClass } from "react";
 import * as base64 from "base-64";
 import CryptoJs from "crypto-js";
+import dayjs from "dayjs";
+import type { RangePickerProps } from "antd/es/date-picker";
 
 export const guid = () => {
   return "xxxxxxxx-xxxx-6xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
@@ -17,6 +19,65 @@ export const range = (start: number, end: number) => {
     result.push(i);
   }
   return result;
+};
+export const disabledDate: RangePickerProps["disabledDate"] = (
+  current: any
+) => {
+  // Can not select days before today and today
+  return current && current < dayjs().startOf("day");
+};
+export const disabledRangeTime: RangePickerProps["disabledTime"] = (
+  _,
+  type: string
+) => {
+  if (type === "start") {
+    return {
+      disabledHours: () => range(0, 60).splice(4, 20),
+      disabledMinutes: () => range(30, 60),
+      disabledSeconds: () => [55, 56],
+    };
+  }
+  return {
+    disabledHours: () => range(0, 60).splice(20, 4),
+    disabledMinutes: () => range(0, 31),
+    disabledSeconds: () => [55, 56],
+  };
+};
+//当日只能选择当前时间之后的时间点
+export const disabledTime = (date: any) => {
+  const currentDay = dayjs().date(); //当下的时间
+  const currentHours = dayjs().hour();
+  const currentMinutes = dayjs().minute(); //设置的时间
+  const currentSeconds = dayjs().second(); //设置的时间
+  const settingHours = dayjs(date).hour();
+  const settingDay = dayjs(date).date();
+
+  if (date && settingDay === currentDay && settingHours === currentHours) {
+    // 这里需要分几种情况去禁用秒针
+    return {
+      disabledHours: () => range(0, currentHours), //设置为当天现在这小时，禁用该小时，该分钟之前的时间
+      disabledMinutes: () => range(0, currentMinutes),
+      // disabledSeconds: () => range(0, currentSeconds),
+    };
+  } else if (date && settingDay === currentDay && settingHours > currentHours) {
+    return {
+      disabledHours: () => range(0, currentHours), //设置为当天现在这小时之后，只禁用当天该小时之前的时间
+      disabledMinutes: () => [],
+      disabledSeconds: () => [],
+    };
+  } else if (date && settingDay === currentDay && settingHours < currentHours) {
+    return {
+      disabledHours: () => range(0, currentHours), //若先设置了的小时小于当前的，再设置日期为当天，需要禁用当天现在这小时之前的时间和所有的分
+      disabledMinutes: () => range(0, 59),
+      disabledSeconds: () => range(0, 59),
+    };
+  } else {
+    return {
+      disabledHours: () => [], //设置为当天之后的日期，则不应有任何时间分钟的限制
+      disabledMinutes: () => [],
+      disabledSeconds: () => [],
+    };
+  }
 };
 // 只有一位数字时添加“0”
 const checkTime = function (i: number) {

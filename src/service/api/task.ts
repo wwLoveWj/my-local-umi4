@@ -1,7 +1,7 @@
 import request from "../request";
 
 export const QueryTaskInfoAPI = (params = {}): Promise<any> => {
-  return request.get("/task/query", params);
+  return request.get("/task/query", { params: { taskStatus: "2", ...params } });
 };
 // 创建任务
 export const createReminderTaskAPI = (params = {}): Promise<any> => {
@@ -24,6 +24,7 @@ export const reminderTaskAPI = (
     reminderContent: string;
     reminderTime: string;
     taskId: string;
+    reminderPattern: string;
   };
 }> => {
   return request.post("/reminder/task", params);

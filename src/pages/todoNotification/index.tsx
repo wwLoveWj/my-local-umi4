@@ -12,6 +12,8 @@ import {
   Alert,
   Empty,
   Switch,
+  DatePicker,
+  Select,
 } from "antd";
 import type { SearchProps } from "antd/es/input/Search";
 import { AlertOutlined, AudioOutlined } from "@ant-design/icons";
@@ -26,7 +28,7 @@ import {
 import ReminderTimeModal from "./components/ReminderTimeModal";
 import { useRequest } from "ahooks";
 import styles from "./style.less";
-import { guid, countDown } from "@/utils";
+import { guid, countDown, disabledDate, disabledRangeTime } from "@/utils";
 import dayjs from "dayjs";
 import "./style.less";
 
@@ -35,6 +37,7 @@ const STATUS_TYPE = new Map([
   ["0", "pendding"],
   ["2", "todoing"],
 ]);
+const { RangePicker } = DatePicker;
 // TODO:表单填写的校验和封装-------------------倒计时相关优化
 const { Search } = Input;
 const Index = () => {
@@ -53,7 +56,7 @@ const Index = () => {
   const [isShowDelBtn, setIsShowDelBtn] = useState(true);
   const timeRef = useRef(null);
   // 请求任务卡片列表信息
-  const queryQueryTaskInfo = useRequest(() => QueryTaskInfoAPI({}), {
+  const queryQueryTaskInfo = useRequest(QueryTaskInfoAPI, {
     debounceWait: 100,
     onSuccess: (res: API.taskListType[]) => {
       for (let i = 0; i < res.length; i++) {
@@ -69,6 +72,8 @@ const Index = () => {
       reminderContent: string;
       reminderTime: string;
       taskId: string;
+      reminderPattern: string;
+      interval: string;
     }) => reminderTimeTaskAPI(params),
     {
       debounceWait: 100,
@@ -88,6 +93,8 @@ const Index = () => {
       reminderContent: string;
       reminderTime: string;
       taskId: string;
+      reminderPattern: string;
+      interval: string;
     }) => reminderTaskAPI(params),
     {
       debounceWait: 100,
@@ -108,7 +115,6 @@ const Index = () => {
       debounceWait: 100,
       manual: true,
       onSuccess: () => {
-        setTaskName("");
         form.resetFields();
         queryQueryTaskInfo.run();
       },
@@ -137,12 +143,14 @@ const Index = () => {
   //   发送任务提醒
   const getReminderTime = (param: any) => {
     setIsOpenModel(false);
-    const { userEmail, reminderTime } = param;
+    const { userEmail, reminderTime, reminderPattern, interval } = param;
     reminderTaskFn.run({
       userEmail,
       reminderContent: taskDetails.task,
       reminderTime,
       taskId: taskDetails.taskId,
+      reminderPattern,
+      interval,
     });
   };
   const suffix = (
@@ -197,8 +205,74 @@ const Index = () => {
   const onChangeSwitch = (checked: boolean) => {
     setIsShowDelBtn(checked);
   };
+
+  const onChangeStatus = (value: string) => {
+    queryQueryTaskInfo.run({ taskStatus: value });
+  };
+  // 查询任务
+  const onSearchTask: SearchProps["onSearch"] = (value) => {
+    queryQueryTaskInfo.run({ taskName: value });
+  };
+
   return (
     <div className={styles.taskInfo}>
+      <Row style={{ padding: "12px 12px 0" }} gutter={[16, 12]}>
+        <Col span={8}>
+          <Search
+            placeholder="请输入你想查询的任务名称..."
+            enterButton
+            value={taskName}
+            onSearch={onSearchTask}
+            onChange={(e) => {
+              let value = e.target.value;
+              setTaskName(value);
+            }}
+            allowClear
+          />
+        </Col>
+        {/* TODO:查询有点问题不知道咋写 */}
+        <Col span={8}>
+          <RangePicker
+            disabledDate={disabledDate}
+            disabledTime={disabledRangeTime}
+            showTime={{
+              hideDisabledOptions: true,
+              defaultValue: [
+                dayjs("00:00:00", "HH:mm:ss"),
+                dayjs("11:59:59", "HH:mm:ss"),
+              ],
+            }}
+            format="YYYY-MM-DD HH:mm:ss"
+          />
+        </Col>
+        <Col span={8}>
+          <Select
+            showSearch
+            placeholder="请选择任务状态"
+            optionFilterProp="children"
+            onChange={onChangeStatus}
+            defaultValue={"2"}
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+            style={{ width: "100%" }}
+            options={[
+              {
+                value: "0",
+                label: "pendding",
+              },
+              {
+                value: "1",
+                label: "completed",
+              },
+              {
+                value: "2",
+                label: "todoing",
+              },
+            ]}
+          />
+        </Col>
+      </Row>
       <div className={styles.completedTotal}>
         <span>{`已完成：${
           taskList.filter((item) => Number(item.status) === 1)?.length
@@ -223,64 +297,58 @@ const Index = () => {
             size="large"
             className={styles.createTask}
             suffix={suffix}
-            value={taskName}
             onSearch={onSearch}
-            onChange={(e) => {
-              let value = e.target.value;
-              setTaskName(value);
-            }}
           />
         </Form.Item>
       </Form>
-      <div
-        style={{
-          display: "flex",
-          margin: "24px 12px 12px",
-          justifyContent: "flex-end",
-        }}
-      >
-        {taskList?.length > 0 && isShowDelBtn && (
-          <div className={styles.allSelected} style={{ flex: 4 }}>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <Checkbox checked={allChecked} onChange={selectAllTasks}>
-                全选
-              </Checkbox>
-              <Alert
-                message={`当前选中任务数：${taskIdList.length}项`}
-                type="info"
-                showIcon
-                banner={true}
-                style={{ width: "200px", color: "#1677ff" }}
-              />
-            </div>
-            <Button
-              danger
-              type="primary"
-              disabled={taskIdList.length === 0}
-              onClick={() => batchDelTaskListFn.run({ taskIdList })}
-            >
-              批量删除
-            </Button>
-          </div>
-        )}
+      {taskList?.length > 0 && (
         <div
           style={{
-            justifyContent: "flex-end",
             display: "flex",
-            alignItems: "center",
+            margin: "24px 12px 12px",
+            justifyContent: "flex-end",
           }}
         >
-          {/* <Button danger onClick={() => setIsShowDelBtn(!isShowDelBtn)}>
-            开启删除
-          </Button> */}
-          <Switch
-            checkedChildren="开启"
-            unCheckedChildren="关闭"
-            defaultChecked
-            onChange={onChangeSwitch}
-          />
+          {isShowDelBtn && (
+            <div className={styles.allSelected} style={{ flex: 4 }}>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <Checkbox checked={allChecked} onChange={selectAllTasks}>
+                  全选
+                </Checkbox>
+                <Alert
+                  message={`当前选中任务数：${taskIdList.length}项`}
+                  type="info"
+                  showIcon
+                  banner={true}
+                  style={{ width: "200px", color: "#1677ff" }}
+                />
+              </div>
+              <Button
+                danger
+                type="primary"
+                disabled={taskIdList.length === 0}
+                onClick={() => batchDelTaskListFn.run({ taskIdList })}
+              >
+                批量删除
+              </Button>
+            </div>
+          )}
+          <div
+            style={{
+              justifyContent: "flex-end",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <Switch
+              checkedChildren="开启"
+              unCheckedChildren="关闭"
+              defaultChecked
+              onChange={onChangeSwitch}
+            />
+          </div>
         </div>
-      </div>
+      )}
       {taskList?.length > 0 ? (
         <Row
           gutter={[16, 12]}
@@ -361,7 +429,12 @@ const Index = () => {
                       </p>
                       {item.reminderTime && (
                         <p style={{ color: item.checked ? "#fff" : "#000" }}>
-                          提醒时间：{item.reminderTime}
+                          提醒时间：
+                          {item.reminderPattern !== "intervalTime"
+                            ? dayjs(item.reminderTime).format(
+                                "YYYY-MM-DD HH:mm:ss"
+                              )
+                            : item.reminderTime}
                         </p>
                       )}
                     </div>

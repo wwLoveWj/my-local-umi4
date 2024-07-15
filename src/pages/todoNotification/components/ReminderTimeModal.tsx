@@ -1,11 +1,25 @@
 import React, { useState } from "react";
 import { LocalizedModal as WwModel } from "@/components/wwModel/index";
-import type { DatePickerProps } from "antd";
-import { DatePicker, Form, Button, Select } from "antd";
-import type { RangePickerProps } from "antd/es/date-picker";
+import type { DatePickerProps, TimePickerProps } from "antd";
+import { DatePicker, Form, Button, Select, TimePicker, Input } from "antd";
 import { useRequest } from "ahooks";
 import { QueryUserInfoAPI } from "@/service/api/user";
-import dayjs from "dayjs";
+import { disabledTime, disabledDate } from "@/utils/index";
+
+const { Option } = Select;
+// type PickerType = "time" | "date";
+// const PickerWithType = ({
+//   type,
+//   onChange,
+// }: {
+//   type: PickerType;
+//   onChange: TimePickerProps["onChange"] | DatePickerProps["onChange"];
+// }) => {
+//   if (type === "time") return <TimePicker onChange={onChange} />;
+//   if (type === "date") return <DatePicker onChange={onChange} />;
+//   return <DatePicker picker={type} onChange={onChange} />;
+// };
+
 const Index = ({
   isOpenModel,
   setIsOpenModel,
@@ -16,85 +30,51 @@ const Index = ({
   getReminderTime: (param: any) => void;
 }) => {
   const [form] = Form.useForm();
-  const [reminderTime, setReminderTime] = useState<string | string[]>("");
+  // const [type, setType] = useState<PickerType>("time");
+  const [time, setTime] = useState("fixedDate"); //提醒的时间类型
+  const [interval, setInterval] = useState("second");
+  // 时间选择器的前缀
+  const selectBefore = (
+    <Select value={interval} onChange={setInterval}>
+      <Option value="second">秒</Option>
+      <Option value="minute">分钟</Option>
+      <Option value="hour">小时</Option>
+      <Option value="day">天</Option>
+      <Option value="week">周</Option>
+      <Option value="month">月</Option>
+      <Option value="year">年</Option>
+    </Select>
+  );
+  // 关闭弹窗
   const hideModal = () => {
     setIsOpenModel(false);
   };
-
+  // 搜索用户下拉select
+  const filterOption = (
+    input: string,
+    option?: { username: string; email: string }
+  ) => (option?.username ?? "").toLowerCase().includes(input.toLowerCase());
   /**
    * 查询用户信息接口
    */
   const { data: userEmailList } = useRequest(QueryUserInfoAPI, {
     debounceWait: 100,
   });
-  const filterOption = (
-    input: string,
-    option?: { username: string; email: string }
-  ) => (option?.username ?? "").toLowerCase().includes(input.toLowerCase());
+
   const onOk = (value: DatePickerProps["value"]) => {
     console.log("onOk: ", value);
   };
+  // 设置提醒时间接口的参数
   const onFinish = () => {
     form.validateFields().then((res) => {
-      getReminderTime({ reminderTime, userEmail: res.userEmail });
+      getReminderTime({
+        reminderTime: res.reminderTime,
+        userEmail: res.userEmail,
+        reminderPattern: res.reminderPattern,
+        interval,
+      });
       form.resetFields();
     });
-  };
-  // 日期选择器时间的禁用
-  const range = (start: number, end: number) => {
-    const result = [];
-    for (let i = start; i < end; i++) {
-      result.push(i);
-    }
-    return result;
-  };
-  const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-    // Can not select days before today and today
-    return current && current < dayjs().startOf("day");
-  };
-  //当日只能选择当前时间之后的时间点
-  const disabledTime = (date: any) => {
-    const currentDay = dayjs().date(); //当下的时间
-    const currentHours = dayjs().hour();
-    const currentMinutes = dayjs().minute(); //设置的时间
-    const currentSeconds = dayjs().second(); //设置的时间
-    const settingHours = dayjs(date).hour();
-    const settingDay = dayjs(date).date();
-
-    if (date && settingDay === currentDay && settingHours === currentHours) {
-      // 这里需要分几种情况去禁用秒针
-      return {
-        disabledHours: () => range(0, currentHours), //设置为当天现在这小时，禁用该小时，该分钟之前的时间
-        disabledMinutes: () => range(0, currentMinutes),
-        // disabledSeconds: () => range(0, currentSeconds),
-      };
-    } else if (
-      date &&
-      settingDay === currentDay &&
-      settingHours > currentHours
-    ) {
-      return {
-        disabledHours: () => range(0, currentHours), //设置为当天现在这小时之后，只禁用当天该小时之前的时间
-        disabledMinutes: () => [],
-        disabledSeconds: () => [],
-      };
-    } else if (
-      date &&
-      settingDay === currentDay &&
-      settingHours < currentHours
-    ) {
-      return {
-        disabledHours: () => range(0, currentHours), //若先设置了的小时小于当前的，再设置日期为当天，需要禁用当天现在这小时之前的时间和所有的分
-        disabledMinutes: () => range(0, 59),
-        disabledSeconds: () => range(0, 59),
-      };
-    } else {
-      return {
-        disabledHours: () => [], //设置为当天之后的日期，则不应有任何时间分钟的限制
-        disabledMinutes: () => [],
-        disabledSeconds: () => [],
-      };
-    }
   };
 
   return (
@@ -125,22 +105,52 @@ const Index = ({
             wrapperCol={{ span: 20 }}
             onFinish={onFinish}
             autoComplete="off"
+            initialValues={{ reminderPattern: "fixedDate" }}
           >
+            <Form.Item
+              label="定时模式"
+              name="reminderPattern"
+              rules={[{ required: true, message: "请选择您的定时模式！" }]}
+            >
+              {/* <Select value={type} onChange={setType}>
+                <Option value="time">Time</Option>
+                <Option value="date">Date</Option>
+                <Option value="week">Week</Option>
+                <Option value="month">Month</Option>
+                <Option value="quarter">Quarter</Option>
+                <Option value="year">Year</Option>
+                <Option value="interval">Interval</Option>
+              </Select> */}
+              <Select
+                value={time}
+                onChange={(e) => {
+                  setTime(e);
+                  // form.setFieldValue("reminderTime", "");
+                }}
+              >
+                <Option value="fixedDate">固定日期</Option>
+                <Option value="fixedTime">固定时间</Option>
+                <Option value="intervalTime">间隔时间</Option>
+              </Select>
+            </Form.Item>
             <Form.Item
               label="提醒时间"
               name="reminderTime"
               rules={[{ required: true, message: "请选择您需要提醒的时间！" }]}
             >
-              <DatePicker
-                showTime
-                disabledDate={disabledDate}
-                disabledTime={disabledTime}
-                onChange={(_, dateString) => {
-                  setReminderTime(dateString);
-                }}
-                onOk={onOk}
-                style={{ width: "100%" }}
-              />
+              {time === "intervalTime" ? (
+                <Input addonAfter={selectBefore} />
+              ) : time === "fixedDate" ? (
+                <DatePicker
+                  showTime
+                  disabledDate={disabledDate}
+                  disabledTime={disabledTime}
+                  onOk={onOk}
+                  style={{ width: "100%" }}
+                />
+              ) : (
+                <TimePicker />
+              )}
             </Form.Item>
             <Form.Item
               label="提醒邮箱"

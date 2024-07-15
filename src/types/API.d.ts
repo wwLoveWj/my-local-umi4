@@ -24,6 +24,7 @@ declare namespace API {
     taskId: string;
     createTime: string;
     reminderTime: string;
+    reminderPattern: string;
     status: string;
     checked: boolean;
   }
