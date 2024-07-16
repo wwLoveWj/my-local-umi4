@@ -94,11 +94,15 @@ export function rootContainer(container: React.ReactNode) {
 }
 
 export async function render(oldRender: any) {
-  // 根据id通过链表查询到menusId
-  const result = await getMenuIdsByroleIdByUserId({
-    userId: loginInfo?.userId,
-  });
-  menuIds = result[0]?.menuIds;
+  if (loginInfo?.userId) {
+    // 根据id通过链表查询到menusId
+    const result = await getMenuIdsByroleIdByUserId({
+      userId: loginInfo?.userId,
+    });
+
+    menuIds = result[0]?.menuIds;
+  }
+
   if (menuIds?.length > 0) {
     const routesData = await getMenuListByRole({
       menuIds,

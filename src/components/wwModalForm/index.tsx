@@ -19,7 +19,7 @@ interface FormFieldConfig<T extends AntdFormComponentProps = any> {
   name: string;
   label: string;
   type: "input" | "select" | "datePicker";
-  initialValue?: string;
+  initialValue?: string | number;
   options?: { value: string; label: string }[];
   rules?: FormItemProps["rules"];
   fieldProps: Record<string, any>;
@@ -78,6 +78,7 @@ const ConfigurableModalForm: React.FC<ModalFormConfig> = ({
                       {...field?.fieldProps}
                       style={{ width: "100%" }}
                       placeholder={`请输入${field.label}`}
+                      allowClear
                     />
                   );
                 case "select":
@@ -86,19 +87,15 @@ const ConfigurableModalForm: React.FC<ModalFormConfig> = ({
                       {...field?.fieldProps}
                       style={{ width: "100%" }}
                       placeholder={`请选择${field.label}`}
-                    >
-                      {field.options?.map((option) => (
-                        <Select.Option key={option.value} value={option.value}>
-                          {option.label}
-                        </Select.Option>
-                      ))}
-                    </Select>
+                      options={field.options}
+                    />
                   );
                 case "datePicker":
                   return (
                     <DatePicker
                       {...field?.fieldProps}
                       style={{ width: "100%" }}
+                      allowClear
                     />
                   );
                 default:

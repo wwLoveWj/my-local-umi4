@@ -8,17 +8,25 @@ import { useRequest } from "ahooks";
 import {
   queryUsersAuthListAPI,
   revokeAuthorizationAPI,
+  getRoleListAPI,
 } from "@/service/api/roles";
 import { createSystemUsersAPI, editSystemUsersAPI } from "@/service/api/login";
 import { guid } from "@/utils";
 import dayjs from "dayjs";
-
-const roleList = [
-  { value: 1, label: "管理员" },
-  { value: 2, label: "普通用户" },
-];
+import md5 from "md5";
+// const roleList = [
+//   { value: 1, label: "管理员" },
+//   { value: 2, label: "普通用户" },
+// ];
 const Index: React.FC = () => {
   const [currentId, setCurrentId] = useState("");
+  /**
+   * 查询角色列表
+   */
+  const { data: roleList } = useRequest(getRoleListAPI, {
+    debounceWait: 100,
+  });
+  debugger;
   /**
    * 创建系统登录用户接口
    */
@@ -50,7 +58,7 @@ const Index: React.FC = () => {
       runAsync();
     },
   });
-  const formFields: FormField[] = [
+  const formQueryFields: FormField[] = [
     {
       name: "username",
       label: "登录用户",
@@ -71,8 +79,8 @@ const Index: React.FC = () => {
       type: "datePicker",
     },
   ];
-
-  const fields: any[] = [
+  // 表单配置
+  const formModalfields: any[] = [
     {
       name: "username",
       label: "登录用户",
@@ -87,6 +95,8 @@ const Index: React.FC = () => {
       type: "input",
       formItemProps: {
         rules: [{ required: true, message: "请输入登录密码" }],
+      },
+      fieldProps: {
         type: "password",
       },
     },
@@ -98,6 +108,9 @@ const Index: React.FC = () => {
       formItemProps: {
         rules: [{ required: true, message: "请选择一个角色" }],
       },
+      fieldProps: {
+        fieldNames: { label: "rolename", value: "roleId" },
+      },
     },
   ];
 
@@ -108,13 +121,17 @@ const Index: React.FC = () => {
     let params = {
       ...values,
       userId: guid(),
-      rolename: roleList.find((item) => item.value === values.roleId)?.label,
+      rolename: roleList.find(
+        (item: { roleId: number; rolename: string }) =>
+          item.roleId === values.roleId
+      )?.rolename,
+      password: md5(values?.password),
     };
     !currentId
       ? createSystemUsersRun.run(params)
       : editSystemUsersRun.run({
           userId: currentId,
-          password: values.password,
+          password: md5(values?.password),
         });
     closeModal(); // 关闭弹窗
   };
@@ -126,7 +143,7 @@ const Index: React.FC = () => {
         visible={visible}
         onOk={handleOk}
         onCancel={closeModal}
-        formFields={fields}
+        formFields={formModalfields}
         form={form}
       />
       <QueryTable
@@ -181,8 +198,9 @@ const Index: React.FC = () => {
             ),
           },
         ]}
-        formFields={formFields}
+        formFields={formQueryFields}
         fetchData={runAsync}
+        dataSource={userAuthList}
       >
         <Button
           type="primary"

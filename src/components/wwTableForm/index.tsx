@@ -86,6 +86,7 @@ const QueryTable: React.FC<QueryTableProps> = ({
                     case "input":
                       return (
                         <Input
+                          allowClear
                           style={{ width: "100%" }}
                           placeholder={`请输入${field.label}`}
                         />
@@ -107,7 +108,9 @@ const QueryTable: React.FC<QueryTableProps> = ({
                         </Select>
                       );
                     case "datePicker":
-                      return <DatePicker style={{ width: "100%" }} />;
+                      return (
+                        <DatePicker style={{ width: "100%" }} allowClear />
+                      );
                     default:
                       return null;
                   }
