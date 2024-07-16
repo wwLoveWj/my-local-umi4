@@ -48,8 +48,9 @@ const menuMatch = (data: any[]) => {
     } else {
       // 重点是这里，拿到对应的js文件
       item.element = (function () {
-        const PageComponent = (item.component = require("@/pages" +
-          item.component.split(".")[1]).default);
+        const PageComponent = (item.component =
+          item.component &&
+          require("@/pages" + item.component?.split(".")[1]).default);
         return <PageComponent />;
       })();
     }
@@ -61,8 +62,9 @@ const menuMatch = (data: any[]) => {
       children: item.children,
       path: item.path,
       icon: iconMap.get(item.icon),
-      key: item.key,
+      key: item.id,
       isHidden: item.isHidden,
+      id: item.id,
       // id: (item.id + 7).toString(),
       // parentId: "6",
     };
@@ -108,6 +110,7 @@ export async function render(oldRender: any) {
       menuIds,
     });
     extraRoutes = menuMatch(transformRoutes(routesData, 0, 0));
+    localStorage.setItem("menus", JSON.stringify(extraRoutes));
   }
   oldRender();
 }

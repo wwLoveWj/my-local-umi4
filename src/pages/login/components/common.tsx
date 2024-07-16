@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {
   EyeInvisibleOutlined,
   EyeTwoTone,
@@ -7,7 +7,7 @@ import {
 } from "@ant-design/icons";
 import { Button, Col, Form, Input, Row } from "antd";
 import _ from "lodash-es";
-import { validEmail, verifyUserPassword } from "@/utils/check";
+import { validEmail, verifyUserPassword, validUsername } from "@/utils/check";
 import type { LoginInfoType } from "../type";
 
 const Index = ({
@@ -24,6 +24,7 @@ const Index = ({
   const [form] = Form.useForm();
   const pwdRef = useRef(null);
   const actRef = useRef(null);
+  const [isUsernameLogin, setUsernameLogin] = useState(true);
   const onFinish = (fieldValues: LoginInfoType) => {
     handleLoginInfoMsg.run(fieldValues);
   };
@@ -41,7 +42,7 @@ const Index = ({
           alignItems: "center",
         }}
       >
-        {status !== "login" && (
+        {(isUsernameLogin || status !== "login") && (
           <Col span={24}>
             <Form.Item
               name="username"
@@ -49,7 +50,7 @@ const Index = ({
               rules={[
                 {
                   required: true,
-                  // validator: validEmail,
+                  validator: validUsername,
                 },
               ]}
             >
@@ -64,45 +65,47 @@ const Index = ({
             </Form.Item>
           </Col>
         )}
-        <Col>
-          <Form.Item
-            name="email"
-            label="邮箱"
-            rules={[
-              {
-                required: true,
-                validator: validEmail,
-              },
-            ]}
-          >
-            <Input
-              ref={actRef}
-              prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="<xxx>@<163.com>"
-              style={{ width: "360px" }}
-              allowClear
-              maxLength={64}
-              onChange={(e) => {
-                let val = e.target.value;
-                onSendUsername && onSendUsername(val);
-              }}
-              onPressEnter={() => {
-                form
-                  .validateFields(["password", "email"])
-                  .then()
-                  .catch((err) => {
-                    if (!err?.errorFields?.[0].name.includes("email")) {
-                      if (err?.errorFields?.[0].name.includes("password")) {
-                        (pwdRef.current as any).focus();
-                      } else {
-                        return onFinish;
+        {(!isUsernameLogin || status !== "login") && (
+          <Col>
+            <Form.Item
+              name="email"
+              label="邮箱"
+              rules={[
+                {
+                  required: true,
+                  validator: validEmail,
+                },
+              ]}
+            >
+              <Input
+                ref={actRef}
+                prefix={<UserOutlined className="site-form-item-icon" />}
+                placeholder="<xxx>@<163.com>"
+                style={{ width: "360px" }}
+                allowClear
+                maxLength={64}
+                onChange={(e) => {
+                  let val = e.target.value;
+                  onSendUsername && onSendUsername(val);
+                }}
+                onPressEnter={() => {
+                  form
+                    .validateFields(["password", "email"])
+                    .then()
+                    .catch((err) => {
+                      if (!err?.errorFields?.[0].name.includes("email")) {
+                        if (err?.errorFields?.[0].name.includes("password")) {
+                          (pwdRef.current as any).focus();
+                        } else {
+                          return onFinish;
+                        }
                       }
-                    }
-                  });
-              }}
-            />
-          </Form.Item>
-        </Col>
+                    });
+                }}
+              />
+            </Form.Item>
+          </Col>
+        )}
         <Col span={24}>
           <Form.Item
             name="password"
@@ -157,6 +160,14 @@ const Index = ({
             )}
           </Form.Item>
         </Col>
+        {status === "login" && <Col span={24}><a
+          onClick={(e) => {
+            e.preventDefault();
+            setUsernameLogin(!isUsernameLogin);
+          }}
+        >
+          {!isUsernameLogin ? "用户登录" : "邮箱登录"}
+        </a></Col>}
       </Row>
     </Form>
   );

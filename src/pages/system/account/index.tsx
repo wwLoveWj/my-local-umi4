@@ -14,10 +14,7 @@ import { createSystemUsersAPI, editSystemUsersAPI } from "@/service/api/login";
 import { guid } from "@/utils";
 import dayjs from "dayjs";
 import md5 from "md5";
-// const roleList = [
-//   { value: 1, label: "管理员" },
-//   { value: 2, label: "普通用户" },
-// ];
+
 const Index: React.FC = () => {
   const [currentId, setCurrentId] = useState("");
   /**

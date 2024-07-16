@@ -35,7 +35,7 @@ function sideBarRender({
         return (
           !route.isHidden && (
             <SubMenu
-              key={route.key}
+              key={route.path}
               title={t(route.title || "")}
               icon={route.icon && React.createElement(route.icon)}
             >
@@ -48,7 +48,7 @@ function sideBarRender({
       return (
         !route.isHidden && (
           <Menu.Item
-            key={route.key}
+            key={route.path}
             icon={route.icon && React.createElement(route.icon)}
           >
             <Link to={route.path || "/"}>{t(route.title || "")}</Link>

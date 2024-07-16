@@ -9,6 +9,20 @@ export const validEmail = (rule: any, value: string) => {
   }
   return Promise.reject("账户不能为空");
 };
+export const validUsername = (rule: any, value: string) => {
+  if (value) {
+    const regx = /^[a-z][a-z0-9-]*$/;
+    const valid = regx.test(value);
+    if (valid) {
+      return Promise.resolve();
+    }
+    return Promise.reject(
+      "用户名应为以小写字母开头的小写字母、中横线(—)、数字组合"
+    );
+  }
+  return Promise.reject("账户不能为空");
+};
+
 // 非必填邮箱
 export const validEmailNoRequire = (rule: any, value: string) => {
   if (value) {

@@ -4,6 +4,7 @@ import DelPopconfirm from "@/components/DelPopconfirm";
 import { ConfigurableModalForm, useModalForm } from "@/components/wwModalForm";
 import QueryTable from "@/components/wwTableForm";
 import type { FormField } from "@/components/wwTableForm";
+import AssignPermissions from "./assignPermissions";
 import dayjs from "dayjs";
 import {
   getRoleListAPI,
@@ -81,9 +82,16 @@ const Index: React.FC = () => {
       type: "input",
     },
   ];
-
   const { visible, openModal, closeModal, form } = useModalForm();
   const [currentId, setCurrentId] = useState(0);
+  // 分配权限的弹窗
+  const {
+    visible: visibleAuth,
+    openModal: openAuthModal,
+    closeModal: closeAuthModal,
+    form: formAuth,
+  } = useModalForm();
+  const [allAuthInfo, setAllAuthInfo] = useState({});
   const handleOk = (values: Record<string, any>) => {
     !currentId
       ? createSystemUsersRun.run(values)
@@ -94,6 +102,10 @@ const Index: React.FC = () => {
     closeModal(); // 关闭弹窗
   };
 
+  // 刷新列表
+  const onQueryList = () => {
+    runAsync();
+  };
   return (
     <div>
       <ConfigurableModalForm
@@ -105,7 +117,7 @@ const Index: React.FC = () => {
         form={form}
       />
       <QueryTable
-        rowKey={"username"}
+        rowKey={"roleId"}
         columns={[
           {
             dataIndex: "rolename",
@@ -146,12 +158,28 @@ const Index: React.FC = () => {
                   disabled={record?.roleId === 1}
                   title={`确定要删除【${record.rolename}】角色的相关信息吗?`}
                 />
+                <Button
+                  type="link"
+                  onClick={() => {
+                    let params = {
+                      ...record,
+                      menuIds: record.menuIds
+                        ?.split(",")
+                        ?.map((item: string) => Number(item)),
+                    };
+                    setAllAuthInfo(record);
+                    openAuthModal("E", params);
+                  }}
+                >
+                  分配权限
+                </Button>
               </Space>
             ),
           },
         ]}
         formFields={queryFields}
         fetchData={runAsync}
+        dataSource={userAuthList}
       >
         <Button
           type="primary"
@@ -163,6 +191,16 @@ const Index: React.FC = () => {
           创建角色
         </Button>
       </QueryTable>
+      {/* 分配权限的弹窗 */}
+      <AssignPermissions
+        propsFromRoleTable={{
+          visible: visibleAuth,
+          closeModal: closeAuthModal,
+          form: formAuth,
+          allAuthInfo,
+          onQueryList,
+        }}
+      />
     </div>
   );
 };

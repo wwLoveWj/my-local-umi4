@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Modal, Form, Input, Select, DatePicker } from "antd";
+import { Modal, Form, Input, Select, DatePicker, TreeSelect } from "antd";
 import { FormItemProps } from "antd/lib/form";
 import type {
   InputProps,
@@ -18,12 +18,13 @@ type AntdFormComponentProps =
 interface FormFieldConfig<T extends AntdFormComponentProps = any> {
   name: string;
   label: string;
-  type: "input" | "select" | "datePicker";
+  type: "input" | "select" | "datePicker" | "treeSelect";
   initialValue?: string | number;
   options?: { value: string; label: string }[];
   rules?: FormItemProps["rules"];
   fieldProps: Record<string, any>;
   formItemProps: any;
+  render?: any;
 }
 
 // modal的props及from的props
@@ -98,8 +99,10 @@ const ConfigurableModalForm: React.FC<ModalFormConfig> = ({
                       allowClear
                     />
                   );
+                case "treeSelect":
+                  return <TreeSelect {...field?.fieldProps} />;
                 default:
-                  return null;
+                  return field.render();
               }
             })()}
           </Form.Item>
@@ -114,7 +117,7 @@ const useModalForm = () => {
   const [form] = Form.useForm();
 
   const openModal = useCallback(
-    (action: string, record?: any) => {
+    (action?: string, record?: any) => {
       setVisible(true);
       form.resetFields();
       if (action === "E") {

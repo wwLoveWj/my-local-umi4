@@ -11,6 +11,11 @@ export const getMenuIdsByroleIdByUserId = (params = {}): Promise<any> => {
     params: { ...params },
   });
 };
+// 根据角色变更对应用户的权限
+export const chgMenuIdsByRolename = (params = {}): Promise<any> => {
+  return request.post("/auth/roleMenuAddMenuId", params);
+};
+
 // 获取角色列表
 export const getRoleListAPI = (params = {}): Promise<any> => {
   return request.get("/auth/roleList", {
