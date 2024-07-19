@@ -17,7 +17,7 @@ function sideBarRender({
 }) {
   const [saveKeyPath, setSaveKeyPath] = useState<string[]>([]); //存储选中的菜单路径集合
   const [stateOpenKeys, setStateOpenKeys] = useState<string[]>([]);
-  const location = useLocation();
+  const { pathname } = useLocation();
   // 国际化配置
   const intl = useIntl();
   const t = (id: string) => intl.formatMessage({ id });
@@ -66,11 +66,13 @@ function sideBarRender({
   };
 
   useEffect(() => {
-    let keys = location.pathname.split("/");
-    keys.shift();
-    setSaveKeyPath(keys);
+    const keys = pathname
+      .split("/")
+      ?.filter(Boolean)
+      .map((item: string) => "/" + item);
+    setSaveKeyPath([pathname]);
     setStateOpenKeys(keys);
-  }, [location.pathname]);
+  }, [pathname]);
 
   return (
     <Menu
