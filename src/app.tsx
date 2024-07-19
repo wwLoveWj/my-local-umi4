@@ -20,13 +20,9 @@ import {
 } from "@ant-design/icons";
 import Package from "../package.json";
 import React from "react";
-import { getMenuIdsByroleIdByUserId } from "@/service/api/roles";
-import { getMenuListByRole } from "@/service/api/roles";
-import { transformRoutes } from "@/utils";
+import vstores from "vstores";
 
-let extraRoutes: any[];
-let menuIds = "";
-let loginInfo = JSON.parse(localStorage.getItem("login-info"));
+let loginInfo = vstores.get("login-info");
 // icon对应的dom映射
 const iconMap = new Map([
   ["HomeOutlined", HomeOutlined],
@@ -62,11 +58,8 @@ const menuMatch = (data: any[]) => {
       children: item.children,
       path: item.path,
       icon: iconMap.get(item.icon),
-      key: item.id,
       isHidden: item.isHidden,
       id: item.id,
-      // id: (item.id + 7).toString(),
-      // parentId: "6",
     };
   });
   return arr;
@@ -74,14 +67,12 @@ const menuMatch = (data: any[]) => {
 // 初始化路由菜单数据
 export async function getInitialState() {
   return {
-    menuRoutes: extraRoutes,
+    menuRoutes: menuMatch(loginInfo?.extraRoutes) || [],
   };
 }
 // 应用启动时动态加载路由
 export async function patchClientRoutes({ routes }: { routes: any[] }) {
-  if (menuIds?.length > 0) {
-    routes[3].routes.push(...extraRoutes);
-  }
+  routes[3].routes.push(...(loginInfo?.extraRoutes || []));
 }
 
 export function rootContainer(container: React.ReactNode) {
@@ -96,21 +87,5 @@ export function rootContainer(container: React.ReactNode) {
 }
 
 export async function render(oldRender: any) {
-  if (loginInfo?.userId) {
-    // 根据id通过链表查询到menusId
-    const result = await getMenuIdsByroleIdByUserId({
-      userId: loginInfo?.userId,
-    });
-
-    menuIds = result[0]?.menuIds;
-  }
-
-  if (menuIds?.length > 0) {
-    const routesData = await getMenuListByRole({
-      menuIds,
-    });
-    extraRoutes = menuMatch(transformRoutes(routesData, 0, 0));
-    localStorage.setItem("menus", JSON.stringify(extraRoutes));
-  }
   oldRender();
 }

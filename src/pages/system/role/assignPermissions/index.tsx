@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { TreeSelect } from "antd";
 import { ConfigurableModalForm } from "@/components/wwModalForm";
-const { SHOW_PARENT } = TreeSelect;
 import { chgMenuIdsByRolename } from "@/service/api/roles";
 import { useRequest } from "ahooks";
+import vstores from "vstores";
+const { SHOW_ALL } = TreeSelect;
 
 const Index: React.FC<{ propsFromRoleTable: any }> = ({
   propsFromRoleTable,
@@ -11,7 +12,8 @@ const Index: React.FC<{ propsFromRoleTable: any }> = ({
   const { closeModal, visible, form, allAuthInfo, onQueryList } =
     propsFromRoleTable;
   const [value, setValue] = useState<string | string[]>([]);
-  let treeData = JSON.parse(localStorage.getItem("menus"));
+  let treeData = vstores.get("login-info")?.permissionMenuList;
+
   // 更改菜单权限的接口
   const chgMenuIdsByRolenameRun = useRequest(chgMenuIdsByRolename, {
     debounceWait: 100,
@@ -21,8 +23,8 @@ const Index: React.FC<{ propsFromRoleTable: any }> = ({
     },
   });
   //   勾选权限菜单的change事件
-  const onChange = (newValue: string[]) => {
-    console.log("onChange ", newValue);
+  const onChange = (newValueList: any[]) => {
+    const newValue = newValueList.map((item) => item.value);
     setValue(newValue);
   };
   //   树组件的props参数
@@ -33,9 +35,10 @@ const Index: React.FC<{ propsFromRoleTable: any }> = ({
     treeDefaultExpandedKeys: allAuthInfo.menuIds?.split(","),
     fieldNames: { label: "title", value: "id" },
     treeCheckable: true,
-    showCheckedStrategy: SHOW_PARENT,
+    showCheckedStrategy: SHOW_ALL,
     placeholder: "请勾选需要展示的菜单",
     allowClear: true,
+    treeCheckStrictly: true,
     style: {
       width: "100%",
     },
@@ -67,9 +70,12 @@ const Index: React.FC<{ propsFromRoleTable: any }> = ({
   ];
   //  弹窗的提交事件
   const handleOk = (values: Record<string, any>) => {
+    const menuIds = values.menuIds?.map(
+      (item: { value: string }) => item.value
+    );
     let params = {
       ...values,
-      menuIds: values.menuIds.join(),
+      menuIds: menuIds.join(),
       roleId: allAuthInfo?.roleId,
     };
     chgMenuIdsByRolenameRun.run(params);

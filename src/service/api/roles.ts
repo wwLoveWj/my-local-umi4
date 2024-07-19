@@ -15,7 +15,12 @@ export const getMenuIdsByroleIdByUserId = (params = {}): Promise<any> => {
 export const chgMenuIdsByRolename = (params = {}): Promise<any> => {
   return request.post("/auth/roleMenuAddMenuId", params);
 };
-
+// 获取所有的菜单数据
+export const queryMenuListAPI = (params = {}): Promise<any> => {
+  return request.get("/auth/queryMenuList", {
+    params: { ...params },
+  });
+};
 // 获取角色列表
 export const getRoleListAPI = (params = {}): Promise<any> => {
   return request.get("/auth/roleList", {

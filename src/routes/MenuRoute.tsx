@@ -20,7 +20,7 @@ export const menuRoutes = [
    *  path：用于路由跳转
    *  component：组件所在路径，从pages路径下开始
    *  icon：菜单图标
-   *  hidden: 是否隐藏该菜单项
+   *  isHidden: 是否隐藏该菜单项
    *  routes：子级菜单项
    */
   {
@@ -41,7 +41,7 @@ export const menuRoutes = [
     //     title: "router.home.detail",
     //     path: "/home/detail",
     //     component: "./home/Detail",
-    //     hidden: true, //隐藏该菜单项，主要是详情、新增、编辑页
+    //     isHidden: true, //隐藏该菜单项，主要是详情、新增、编辑页
     //   },
     // ],
   },
@@ -98,7 +98,7 @@ export const menuRoutes = [
         title: "router.integral.details",
         path: "/integral/details",
         component: "./integral/components/Details",
-        hidden: true,
+        isHidden: true,
       },
     ],
   },
@@ -120,14 +120,14 @@ export const menuRoutes = [
         title: "router.article.edit",
         path: "/article/edit",
         component: "./article/components/ArticleCreate.tsx",
-        hidden: true,
+        isHidden: true,
       },
       {
         key: "create",
         title: "router.article.create",
         path: "/article/create",
         component: "./article/components/ArticleCreate.tsx",
-        hidden: true,
+        isHidden: true,
       },
     ],
   },
@@ -144,6 +144,11 @@ export const menuRoutes = [
     path: "/system",
     icon: ReadOutlined,
     routes: [
+      {
+        path: "/system",
+        isHidden: true,
+        redirect: "/system/system-account",
+      },
       {
         key: "system-account",
         title: "router.system.account",

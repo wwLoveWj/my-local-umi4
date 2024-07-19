@@ -135,9 +135,16 @@ const Index: React.FC<Iprops> = ({ avatarItems, rolesList, projectName }) => {
     countDownTimer.current = setInterval(() => {
       setTimeView(getCurrentTime());
     }, 1000);
+    // 监听外部窗口宽度的变化，如果小于 1024px，自动收起侧边栏
+    const handleResize = () => {
+      setCollapsed(window.innerWidth < 1024);
+    };
 
+    window.addEventListener("resize", handleResize);
     return () => {
       clearInterval(countDownTimer.current);
+      window.removeEventListener("resize", handleResize);
+      // 原文链接：https://blog.csdn.net/guohaosir/article/details/130753433
     };
   }, []);
 

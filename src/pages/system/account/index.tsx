@@ -23,7 +23,6 @@ const Index: React.FC = () => {
   const { data: roleList } = useRequest(getRoleListAPI, {
     debounceWait: 100,
   });
-  debugger;
   /**
    * 创建系统登录用户接口
    */
