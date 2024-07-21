@@ -10,6 +10,7 @@ import {
   ReadOutlined,
   HomeOutlined,
   AudioOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 
 export const menuRoutes = [
@@ -142,7 +143,7 @@ export const menuRoutes = [
     key: "system",
     title: "router.system",
     path: "/system",
-    icon: ReadOutlined,
+    icon: SettingOutlined,
     routes: [
       {
         path: "/system",

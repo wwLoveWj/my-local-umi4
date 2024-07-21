@@ -17,6 +17,7 @@ import {
   AudioOutlined,
   RobotOutlined,
   KeyOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import Package from "../package.json";
 import React from "react";
@@ -35,6 +36,7 @@ const iconMap = new Map([
   ["UserOutlined", UserOutlined],
   ["RobotOutlined", RobotOutlined],
   ["KeyOutlined", KeyOutlined],
+  ["SettingOutlined", SettingOutlined],
 ]);
 //  实现菜单所需数据的组合配置
 const menuMatch = (data: any[]) => {

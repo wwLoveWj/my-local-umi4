@@ -28,3 +28,8 @@ export const editSystemUsersAPI = (params: any): Promise<LoginInfoType> => {
 export const sendMailCodeAPI = (params: any): Promise<any> => {
   return request.post("/code/send", params);
 };
+
+// 扫码登录
+export const scanCodeAPI = (params: any): Promise<any> => {
+  return request.get("/scan/login", params);
+};

@@ -46,69 +46,71 @@ const ConfigurableModalForm: React.FC<ModalFormConfig> = ({
   form,
 }) => {
   return (
-    <Modal
-      title={title}
-      open={visible}
-      onOk={() => {
-        form
-          .validateFields()
-          .then((values) => {
-            onOk(values);
-          })
-          .catch((errorInfo) => {
-            console.log("Validate Failed:", errorInfo);
-          });
-      }}
-      onCancel={onCancel}
-    >
-      <Form form={form} layout="vertical">
-        {formFields.map((field) => (
-          <Form.Item
-            {...field?.formItemProps}
-            key={field.name}
-            name={field.name}
-            label={field.label}
-            initialValue={field.initialValue}
-            style={{ width: "100%" }}
-          >
-            {(() => {
-              switch (field.type) {
-                case "input":
-                  return (
-                    <Input
-                      {...field?.fieldProps}
-                      style={{ width: "100%" }}
-                      placeholder={`请输入${field.label}`}
-                      allowClear
-                    />
-                  );
-                case "select":
-                  return (
-                    <Select
-                      {...field?.fieldProps}
-                      style={{ width: "100%" }}
-                      placeholder={`请选择${field.label}`}
-                      options={field.options}
-                    />
-                  );
-                case "datePicker":
-                  return (
-                    <DatePicker
-                      {...field?.fieldProps}
-                      style={{ width: "100%" }}
-                      allowClear
-                    />
-                  );
-                case "treeSelect":
-                  return <TreeSelect {...field?.fieldProps} />;
-                default:
-                  return field.render();
-              }
-            })()}
-          </Form.Item>
-        ))}
-      </Form>
-    </Modal>
+    visible && (
+      <Modal
+        title={title}
+        open={visible}
+        onOk={() => {
+          form
+            .validateFields()
+            .then((values) => {
+              onOk(values);
+            })
+            .catch((errorInfo) => {
+              console.log("Validate Failed:", errorInfo);
+            });
+        }}
+        onCancel={onCancel}
+      >
+        <Form form={form} layout="vertical">
+          {formFields.map((field) => (
+            <Form.Item
+              {...field?.formItemProps}
+              key={field.name}
+              name={field.name}
+              label={field.label}
+              initialValue={field.initialValue}
+              style={{ width: "100%" }}
+            >
+              {(() => {
+                switch (field.type) {
+                  case "input":
+                    return (
+                      <Input
+                        {...field?.fieldProps}
+                        style={{ width: "100%" }}
+                        placeholder={`请输入${field.label}`}
+                        allowClear
+                      />
+                    );
+                  case "select":
+                    return (
+                      <Select
+                        {...field?.fieldProps}
+                        style={{ width: "100%" }}
+                        placeholder={`请选择${field.label}`}
+                        options={field.options}
+                      />
+                    );
+                  case "datePicker":
+                    return (
+                      <DatePicker
+                        {...field?.fieldProps}
+                        style={{ width: "100%" }}
+                        allowClear
+                      />
+                    );
+                  case "treeSelect":
+                    return <TreeSelect {...field?.fieldProps} />;
+                  default:
+                    return field.render();
+                }
+              })()}
+            </Form.Item>
+          ))}
+        </Form>
+      </Modal>
+    )
   );
 };
 // 控制弹窗显示的函数
