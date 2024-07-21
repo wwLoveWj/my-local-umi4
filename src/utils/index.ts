@@ -297,3 +297,87 @@ export function transformRoutes(arr: any, pid: number, level: number) {
   });
   return treeArr;
 }
+
+// ================================检查是否是子节点========================================
+interface TreeNode {
+  id: number;
+  children?: TreeNode[];
+}
+function searchInChildren(
+  children: TreeNode[],
+  targetKey: string | number,
+  parentKey: string | number
+): string | number | undefined {
+  for (const child of children) {
+    if (child.id === targetKey) {
+      return parentKey;
+    }
+    if (child.children && child.children.length > 0) {
+      const result = searchInChildren(child.children, targetKey, child.id);
+      if (result !== undefined) {
+        return result;
+      }
+    }
+  }
+}
+// 子勾选父级也勾选上
+export function findParentKey(
+  tree: TreeNode[],
+  targetKey: string | number
+): string | number | undefined {
+  for (const node of tree) {
+    if (node.children && node.children.length > 0) {
+      // 检查子节点是否包含目标键
+      const result = searchInChildren(node.children, targetKey, node.id);
+      if (result !== undefined) {
+        return result;
+      }
+    } else if (node.id === targetKey) {
+      // 如果没有子节点但是当前节点就是目标键，返回上一层的key（这取决于你的需求）
+      return node.id; // 或者抛出错误，因为这不满足题目要求
+    }
+  }
+}
+// 父级勾选，子级全部勾选上
+export const childrenValuePush = (node: any, arr: any) => {
+  if (node.children) {
+    for (let i = 0; i < node.children.length; i++) {
+      node.children[i].id && arr.push(node.children[i]?.id);
+      childrenValuePush(node.children[i], arr);
+    }
+  }
+  return arr;
+};
+const getChild = (nodes, item, arr) => {
+  for (let el of nodes) {
+    if (el.id === item) {
+      arr.push(el.id);
+      if (el.children) {
+        childNodesDeep(el.children, arr);
+      }
+    } else if (el.children) {
+      getChild(el.children, item, arr);
+    }
+  }
+  return arr;
+};
+const childNodesDeep = (nodes, arr) => {
+  if (nodes)
+    nodes.forEach((ele) => {
+      arr.push(ele.id);
+      if (ele.children) {
+        childNodesDeep(ele.children, arr);
+      }
+    });
+};
+
+export const getChildIds = (nodes, id, arr) => {
+  for (let el of nodes) {
+    if (el.id === id) {
+      if (el.children) {
+        childNodesDeep(el.children, arr);
+      }
+    }
+  }
+  return arr;
+};
